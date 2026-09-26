@@ -68,7 +68,7 @@
   <table>
     <tr><th style="width:52%">分区</th><th style="width:20%">数量</th><th>说明</th></tr>
     <tr><td><code>[filter_remote]</code> 远程分流规则集</td><td><b>14 套</b><br><span class="small" style="text-decoration:line-through">原 19 套</span></td><td>已删掉 5 套</td></tr>
-    <tr><td><code>[filter_local]</code> 本地分流规则</td><td><b>58 行</b><br><span class="small" style="text-decoration:line-through">原 13 行</span></td><td>+2 Soul、+4 直连白名单、+13 交易所、<b>+26 国产 AI / 字节系</b>；另 6 行是内网 IP，删不得</td></tr>
+    <tr><td><code>[filter_local]</code> 本地分流规则</td><td><b>90 行</b><br><span class="small" style="text-decoration:line-through">原 13 行</span></td><td>+2 Soul、+4 直连白名单、+13 交易所、+26 国产 AI / 字节系、<b>+32 输入法与语音引擎</b>；另 6 行是内网 IP，删不得</td></tr>
     <tr><td><code>[rewrite_remote]</code> 重写（去广告主体）</td><td><b>9 条</b><br><span class="small" style="text-decoration:line-through">原 18 条</span></td><td>已按你的要求删掉 9 条</td></tr>
     <tr><td><code>[policy]</code> 策略组</td><td><b>16 个</b></td><td>删 3 空转 + 增 3 地区 + 删「苹果服务」+ 增「Soul」+ 增「交易所」+ 增 德 / 火鸡 2 个地区</td></tr>
     <tr><td><code>[task_local]</code> 定时/手动任务</td><td><b>2 个</b></td><td>不影响性能</td></tr>
@@ -136,17 +136,28 @@
     ⚠ 备注：<code>[filter_local]</code> 里的 <code>geoip, cn, direct</code> 一行<b>保留未动</b>（它现在也不参与分流，留着是日后想切回「兜底走代理」时的退路）。</span>
   </div>
 
-  <h2>二、分流规则 · 本地 58 行</h2>
+  <h2>二、分流规则 · 本地 90 行</h2>
 
   <div class="note n-ok">
-    <b>第十八轮新增 26 行：国产 AI / 字节系 · 直连白名单。</b>见下表 <b>#25–#50</b>。<br>
+    <b>第十八 / 十九轮共新增 58 行：国产 AI · 输入法 · 语音引擎 · 直连白名单。</b>见下表 <b>#25–#82</b>。<br>
+    <b>第十八轮的起因：</b>你反馈「豆包变卡了」，并问是不是漏掉了国产 AI —— <b>是漏了</b>。<br>
+    <b>真凶：</b>远程「广告终结者」里夹着一行 <code>host-suffix, opt.doubao.com, reject</code>。
+    <code>opt.*</code> 是字节的 <b>ABTest / 配置下发</b>域名，豆包启动时要请求它拿实验分组和功能开关；
+    被 reject 之后 App 可能<b>重试 + 等超时</b> → 启动和首页内容变慢。<br>
+    圈X 的匹配顺序是「本地规则 → 远程规则 → final」，<b>本地规则优先</b>，所以写下表第 25 行就能盖掉它。<br>
+    <b>第十九轮的起因：</b>你补充「豆包这种语音输入，开了代理会变慢；国产输入法（搜狗 / 讯飞 / 新版那些）
+    的语音识别也依赖国内服务器」。查证后是两层结论：<br>
+    · 输入法域名<b>本来就走直连</b> —— 「全球加速」497 条里零国产服务、「Ai-All-In-One」只收国外 AI；<br>
+    · 但远程「广告终结者」里有 <b>28 条 <code>*.sogou.com</code> 的 reject</b>，而它<b>每天更新</b> ——
+    今天拦埋点，明天可能误伤功能域，届时表现就是「语音输入没反应」。<br>
     <b>起因：</b>你反馈「豆包变卡了」，并问是不是漏掉了国产 AI —— <b>是漏了</b>。<br>
     <b>真凶：</b>远程「广告终结者」里夹着一行 <code>host-suffix, opt.doubao.com, reject</code>。<br>
     <code>opt.*</code> 是字节的 <b>ABTest / 配置下发</b>域名，豆包启动时要请求它拿实验分组和功能开关；
     被 reject 之后 App 可能<b>重试 + 等超时</b> → 启动和首页内容变慢。<br>
     圈X 的匹配顺序是「本地规则 → 远程规则 → final」，<b>本地规则优先</b>，所以写下表第一行就能盖掉它。<br>
-    <span class="small">A 段 13 行 = 字节系（其中第 1 行是真正的修复，其余 12 行是「钉死」防变）；
-    B 段 13 行 = 其它国产 AI（纯保险，整段删掉也不影响功能）。</span>
+    <span class="small">A 段 13 行 = 字节系（第 25 行是真正的修复，其余 12 行是「钉死」防变）；
+    B 段 23 行 = 其它国产 AI；C 段 15 行 = 国产输入法；D 段 7 行 = 语音识别引擎。<br>
+    B / C / D 三段都属于<b>保险</b>：删掉不会让功能坏掉，但留着能让「输入法语音失灵」这类疑难杂症永不发生。</span>
   </div>
 
   <div class="note n-warn">
@@ -212,27 +223,59 @@
     <tr style="background:#ecfdf5"><td class="num">35</td><td><code>host-suffix, pstatp.com, direct</code></td></tr>
     <tr style="background:#ecfdf5"><td class="num">36</td><td><code>host-suffix, ibytedtos.com, direct</code></td></tr>
     <tr style="background:#ecfdf5"><td class="num">37</td><td><code>host-suffix, bytegecko.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">38</td><td><code>host-suffix, deepseek.com, direct</code></td><td rowspan="13"><b>【第十八轮新增】B 段 · 其它国产 AI → 直连。</b><span class="pill p-blue">新</span><br><span class="small">DeepSeek / Kimi / 智谱 / 通义 / 文心 / 星火 / 元宝 / 混元 / MiniMax / 阶跃。<br><b>纯保险</b>：这些域名本来就会落到 <code>final, direct</code>，加进来只是更稳（冗余但无害）。<br>哪天想瘦身，<b>整段 13 行删掉不影响任何功能</b>。</span></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">38</td><td><code>host-suffix, deepseek.com, direct</code></td><td rowspan="23"><b>【第十八 / 十九轮】B 段 · 其它国产 AI → 直连。</b><span class="pill p-blue">新</span><br><span class="small">DeepSeek / Kimi / 智谱 ChatGLM / 通义 / 文心 / 元宝 / 混元 / MiniMax / 阶跃 / 百川 / 秘塔 / 天工 / 商汤 / 面壁 / 出门问问 / 零一万物 / 字节即梦。<br><b>纯保险</b>：这些域名本来就会落到 <code>final, direct</code>，加进来只是更稳（冗余但无害）。<br>哪天想瘦身，<b>整段 23 行删掉不影响任何功能</b>。<br>⚠ 刻意<b>未收</b>在境外托管的 <code>moonshot.com</code>（Kimi 国际版）/ <code>pixverse.ai</code> / <code>klingai.com</code> / <code>minimax.io</code> —— 写直连反而更慢。</span></td></tr>
     <tr style="background:#f0f7ff"><td class="num">39</td><td><code>host-suffix, moonshot.cn, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">40</td><td><code>host-suffix, zhipuai.cn, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">41</td><td><code>host-suffix, bigmodel.cn, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">42</td><td><code>host-suffix, dashscope.aliyuncs.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">43</td><td><code>host-suffix, tongyi.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">44</td><td><code>host-suffix, yiyan.baidu.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">45</td><td><code>host-suffix, chat.baidu.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">46</td><td><code>host-suffix, xinghuo.xfyun.cn, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">47</td><td><code>host-suffix, yuanbao.tencent.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">48</td><td><code>host-suffix, hunyuan.tencent.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">49</td><td><code>host-suffix, minimaxi.com, direct</code></td></tr>
-    <tr style="background:#f0f7ff"><td class="num">50</td><td><code>host-suffix, stepfun.com, direct</code></td></tr>
-    <tr><td class="num">51</td><td><code>ip-cidr, 10.0.0.0/8, direct</code></td><td rowspan="6" style="background:#fafbfc"><b>这 6 行是内网 / 保留地址，<span class="pill p-red">一行都不能删</span>。</b><br><span class="small">删了会导致局域网设备、投屏、路由器后台访问异常。<br>其中 182.254.116.0/24 是腾讯的一个诊断地址，也建议留着。</span></td></tr>
-    <tr><td class="num">52</td><td><code>ip-cidr, 127.0.0.0/8, direct</code></td></tr>
-    <tr><td class="num">53</td><td><code>ip-cidr, 172.16.0.0/12, direct</code></td></tr>
-    <tr><td class="num">54</td><td><code>ip-cidr, 192.168.0.0/16, direct</code></td></tr>
-    <tr><td class="num">55</td><td><code>ip-cidr, 224.0.0.0/24, direct</code></td></tr>
-    <tr><td class="num">56</td><td><code>ip-cidr, 182.254.116.0/24, direct</code></td></tr>
-    <tr style="background:#fff7ed"><td class="num">57</td><td><code>geoip, cn, direct</code></td><td>按 GeoIP 数据库判断国内 IP 直连<span class="pill p-warn">可删（但建议留）</span><br><span class="small">final 已 direct，它不再是必需品。<b>注意：Soul 那两行必须排在它前面</b>（配置里已如此）。</span></td></tr>
-    <tr><td class="num">58</td><td><code>final, direct</code></td><td><b>兜底规则，整套配置的最后一关。</b><span class="pill p-ok">必须留</span><br><span class="small">这是「国内不卡」的根基：所有规则都没命中 → 直连</span></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">40</td><td><code>host-suffix, kimi.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">41</td><td><code>host-suffix, zhipuai.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">42</td><td><code>host-suffix, bigmodel.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">43</td><td><code>host-suffix, chatglm.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">44</td><td><code>host-suffix, dashscope.aliyuncs.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">45</td><td><code>host-suffix, tongyi.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">46</td><td><code>host-suffix, yiyan.baidu.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">47</td><td><code>host-suffix, chat.baidu.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">48</td><td><code>host-suffix, yuanbao.tencent.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">49</td><td><code>host-suffix, hunyuan.tencent.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">50</td><td><code>host-suffix, minimaxi.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">51</td><td><code>host-suffix, stepfun.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">52</td><td><code>host-suffix, baichuan-ai.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">53</td><td><code>host-suffix, metaso.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">54</td><td><code>host-suffix, 01.ai, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">55</td><td><code>host-suffix, lingyiwanwu.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">56</td><td><code>host-suffix, tiangong.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">57</td><td><code>host-suffix, sensetime.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">58</td><td><code>host-suffix, modelbest.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">59</td><td><code>host-suffix, mobvoi.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">60</td><td><code>host-suffix, jimeng.jianying.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">61</td><td><code>host-suffix, ime.sogou.com, direct</code></td><td rowspan="15"><b>【第十九轮新增】C 段 · 国产输入法 → 直连。</b><span class="pill p-red">本轮重点</span><br><span class="small"><b>为什么值得单独钉死：</b>输入法的「云输入 / 语音识别 / 词库同步」都要连国内服务器，而各家去广告规则会拦一批 <code>*.sogou.com</code> 之类的域名 —— <b>平时拦的是广告和埋点，一旦误伤功能域，表现就是「语音输入没反应」</b>，而且你根本想不到是代理配置干的。<br>⚠ <b>搜狗只钉精确功能域</b>（不写 <code>host-suffix, sogou.com</code>）：宽匹配会连带放行 26 条搜狗广告/统计/导航域，不划算。若你更在意语音稳定，换成那一行即可（代价：会看到搜狗推广）。<br>⚠ <b>百度只钉输入法本体</b>（不写 <code>host-suffix, baidu.com</code>）：宽匹配会让 <code>mobads.baidu.com</code> 那条开屏去广告失效。</span></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">62</td><td><code>host-suffix, pinyin.sogou.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">63</td><td><code>host-suffix, shurufa.sogou.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">64</td><td><code>host-suffix, wubi.sogou.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">65</td><td><code>host-suffix, sogoucdn.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">66</td><td><code>host-suffix, iflytek.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">67</td><td><code>host-suffix, xfyun.cn, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">68</td><td><code>host-suffix, iflyink.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">69</td><td><code>host-suffix, iflyos.cn, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">70</td><td><code>host-suffix, iat.xf-yun.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">71</td><td><code>host-suffix, ime.baidu.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">72</td><td><code>host-suffix, mime.baidu.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">73</td><td><code>host-suffix, shurufa.baidu.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">74</td><td><code>host-suffix, xinshuru.com, direct</code></td></tr>
+    <tr style="background:#f5f3ff"><td class="num">75</td><td><code>host-suffix, shurufa.qq.com, direct</code></td></tr>
+    <tr style="background:#fef2f2"><td class="num">76</td><td><code>host-suffix, vop.baidu.com, direct</code></td><td rowspan="7"><b>【第十九轮新增】D 段 · 语音识别 / 合成引擎 → 直连。</b><span class="pill p-red">本轮重点</span><br><span class="small">输入法与 AI App 共用的语音底子。<br><code>vop.baidu.com</code> = 百度语音识别 REST API；<code>speech</code> / <code>voice</code> = 百度语音服务；<br>思必驰 / 云知声 / 捷通华声 = 大量输入法、车机、音箱背后的语音引擎。<br><b>豆包的语音输入</b>走 <code>openspeech.bytedance.com</code> / <code>speech.bytedance.com</code> —— 已被 A 段的 <code>bytedance.com</code>（#29）覆盖。</span></td></tr>
+    <tr style="background:#fef2f2"><td class="num">77</td><td><code>host-suffix, speech.baidu.com, direct</code></td></tr>
+    <tr style="background:#fef2f2"><td class="num">78</td><td><code>host-suffix, voice.baidu.com, direct</code></td></tr>
+    <tr style="background:#fef2f2"><td class="num">79</td><td><code>host-suffix, aispeech.com, direct</code></td></tr>
+    <tr style="background:#fef2f2"><td class="num">80</td><td><code>host-suffix, unisound.com, direct</code></td></tr>
+    <tr style="background:#fef2f2"><td class="num">81</td><td><code>host-suffix, hivoice.cn, direct</code></td></tr>
+    <tr style="background:#fef2f2"><td class="num">82</td><td><code>host-suffix, sinovoice.com.cn, direct</code></td></tr>
+    <tr><td class="num">83</td><td><code>ip-cidr, 10.0.0.0/8, direct</code></td><td rowspan="6" style="background:#fafbfc"><b>这 6 行是内网 / 保留地址，<span class="pill p-red">一行都不能删</span>。</b><br><span class="small">删了会导致局域网设备、投屏、路由器后台访问异常。<br>其中 182.254.116.0/24 是腾讯的一个诊断地址，也建议留着。</span></td></tr>
+    <tr><td class="num">84</td><td><code>ip-cidr, 127.0.0.0/8, direct</code></td></tr>
+    <tr><td class="num">85</td><td><code>ip-cidr, 172.16.0.0/12, direct</code></td></tr>
+    <tr><td class="num">86</td><td><code>ip-cidr, 192.168.0.0/16, direct</code></td></tr>
+    <tr><td class="num">87</td><td><code>ip-cidr, 224.0.0.0/24, direct</code></td></tr>
+    <tr><td class="num">88</td><td><code>ip-cidr, 182.254.116.0/24, direct</code></td></tr>
+    <tr style="background:#fff7ed"><td class="num">89</td><td><code>geoip, cn, direct</code></td><td>按 GeoIP 数据库判断国内 IP 直连<span class="pill p-warn">可删（但建议留）</span><br><span class="small">final 已 direct，它不再是必需品。<b>注意：Soul 那两行必须排在它前面</b>（配置里已如此）。</span></td></tr>
+    <tr><td class="num">90</td><td><code>final, direct</code></td><td><b>兜底规则，整套配置的最后一关。</b><span class="pill p-ok">必须留</span><br><span class="small">这是「国内不卡」的根基：所有规则都没命中 → 直连</span></td></tr>
   </table>
 
   <div class="note n-warn">

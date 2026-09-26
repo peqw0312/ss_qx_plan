@@ -1,0 +1,192 @@
+# ============================================================
+#  domestic-direct.list
+#  国产 AI · 国产输入法 · 语音识别引擎 —— 直连规则集
+# ============================================================
+#
+#  用途
+#  ----
+#  把这些域名显式钉死为 direct（直连）。它们都是国内服务，
+#  走代理只会更慢；而部分去广告规则集会把其中的埋点域名整个 reject，
+#  一旦误伤到功能域，表现就是「语音输入没反应」「AI 转圈」，
+#  排查起来毫无头绪。提前钉死可以彻底避免这类问题。
+#
+#  为什么需要它
+#  ------------
+#  · 各家去广告规则集（如 Cats-Team/AdRules）会拦 *.sogou.com 等域名，
+#    且它们是【每天更新】的 —— 今天拦埋点，明天可能就误伤功能域。
+#  · 反过来说：国产服务的域名本来就在 final, direct 下直连，
+#    本规则集属于【保险】，不是必需品。删掉不会让功能坏掉，
+#    但留着能让「输入法语音失灵」这类疑难杂症永不发生。
+#
+#  怎么用（Quantumult X）
+#  ----------------------
+#  方式一：远程引用（推荐，可自动更新）
+#     [filter_remote]
+#     https://raw.githubusercontent.com/peqw0312/ss_qx_plan/main/rules/domestic-direct.list, tag=国产直连, force-policy=direct, update-interval=604800, enabled=true
+#
+#     ★ 关键：这条必须排在【去广告规则集之前】。
+#       QX 的匹配顺序是「本地规则 → 远程规则（按书写顺序）→ final」，
+#       谁先命中谁生效。排在 AdRules 后面就等于没写。
+#     ★ 或者更稳的做法：直接拷进 [filter_local]（本地规则永远优先）。
+#
+#  方式二：手动复制
+#     把下面 host-suffix 各行整段拷进 [filter_local]，
+#     并确保写在 geoip, cn, direct 之前。
+#
+#  出处与许可
+#  ----------
+#  源自 https://github.com/peqw0312/ss_qx_plan
+#  域名清单为实测所得（DNS 解析 + 逐个核对去广告规则集的实际拦截项）。
+#  本文件可自由取用、修改、再分发，无需署名。
+#
+#  已知取舍（请先读）
+#  ------------------
+#  · 搜狗：只钉了精确功能域，【没有】写 host-suffix, sogou.com ——
+#    宽匹配会连带放行 26 条搜狗广告/统计/导航域。若你更在意语音稳定，
+#    把 5 行搜狗规则换成 host-suffix, sogou.com, direct 一行即可。
+#  · 百度：只钉输入法本体，【没有】写 host-suffix, baidu.com ——
+#    宽匹配会让 mobads.baidu.com（百度输入法开屏广告）那条去广告失效。
+#  · 生效后会放行约 7 条埋点/统计型的 reject 规则
+#    （log.iflytek.com / dt.xfyun.cn / log.aispeech.com /
+#      analysis.chatglm.cn / 4 条 *.sogoucdn.com 统计域等）。
+#    这是刻意的取舍：埋点不值得让功能域冒被误伤的风险。
+#
+#  刻意未收录
+#  ----------
+#  下列域名托管在境外，写 direct 反而更慢，故不收：
+#    moonshot.com（Kimi 国际版）· pixverse.ai · klingai.com · minimax.io
+#
+#  更新记录
+#  --------
+#  2026-09-26  首版（58 条）
+#
+# ============================================================
+
+# ── A. 字节系 / 豆包 ──
+# ★ 豆包（含 opt.doubao.com —— 盖掉远程那条 reject）
+host-suffix, doubao.com, direct
+# 豆包备用域名
+host-suffix, doubao.cn, direct
+# 火山引擎 / 火山方舟（豆包模型的云端）
+host-suffix, volces.com, direct
+# 火山引擎 CDN（图片 / 视频 / 模型资源）
+host-suffix, volccdn.com, direct
+# 字节主域（含 mssdk.bytedance.com 配置下发）
+host-suffix, bytedance.com, direct
+# 字节接口域
+host-suffix, bytedanceapi.com, direct
+# 字节图片 CDN
+host-suffix, byteimg.com, direct
+# 字节静态资源 CDN
+host-suffix, bytednsdoc.com, direct
+# 字节静态资源 CDN
+host-suffix, bytescm.com, direct
+# 字节接口（applog / mon / abtest / 风控都在这）
+host-suffix, zijieapi.com, direct
+# 字节老域名（仍在用）
+host-suffix, pstatp.com, direct
+# 字节 TOS 对象存储
+host-suffix, ibytedtos.com, direct
+# 字节配置下发通道（Gecko）
+host-suffix, bytegecko.com, direct
+# 字节语音服务：豆包的「语音输入 / 语音通话」走这两个子域 ——
+#   speech.bytedance.com · openspeech.bytedance.com
+# 已被上面的 host-suffix, bytedance.com 覆盖，写在这里只是方便检索定位。
+# 若哪天发现语音输入变慢，先来这里确认 bytedance.com 那行还在。
+
+# ── B. 其它国产 AI（保险，可整段删除）──
+# DeepSeek
+host-suffix, deepseek.com, direct
+# Kimi / 月之暗面（moonshot.cn 与 kimi.com 是同一套服务）
+host-suffix, moonshot.cn, direct
+host-suffix, kimi.com, direct
+# 智谱清言 · 智谱开放平台 · ChatGLM
+#   ⚠ AdRules 拦了 analysis.chatglm.cn（埋点），会被这行一并放行 —— 埋点不值得为它冒险
+host-suffix, zhipuai.cn, direct
+host-suffix, bigmodel.cn, direct
+host-suffix, chatglm.cn, direct
+# 通义千问 / 阿里百炼 API
+host-suffix, dashscope.aliyuncs.com, direct
+# 通义
+host-suffix, tongyi.com, direct
+# 文心一言（网页版为 chat.baidu.com）
+host-suffix, yiyan.baidu.com, direct
+host-suffix, chat.baidu.com, direct
+# 腾讯元宝 / 混元
+host-suffix, yuanbao.tencent.com, direct
+host-suffix, hunyuan.tencent.com, direct
+# MiniMax / 海螺
+host-suffix, minimaxi.com, direct
+# 阶跃星辰
+host-suffix, stepfun.com, direct
+# 百川智能
+host-suffix, baichuan-ai.com, direct
+# 秘塔 AI 搜索
+host-suffix, metaso.cn, direct
+# 零一万物（万知）
+host-suffix, 01.ai, direct
+host-suffix, lingyiwanwu.com, direct
+# 昆仑万维 · 天工
+host-suffix, tiangong.cn, direct
+# 商汤 · 日日新
+host-suffix, sensetime.com, direct
+# 面壁智能
+host-suffix, modelbest.cn, direct
+# 出门问问
+host-suffix, mobvoi.com, direct
+# 字节「即梦」AI 绘画（jianying.com 是剪映的域，不在 bytedance.com 之下）
+host-suffix, jimeng.jianying.com, direct
+# 讯飞星火 → 由下面 C 段的 xfyun.cn 覆盖，不重复写
+#
+# ⚠ 故意【没有】收进来的（它们在境外托管，写 direct 反而更慢）：
+#   moonshot.com（Kimi 国际版 · Cloudflare）· pixverse.ai（爱诗科技 · Cloudflare）
+#   klingai.com（可灵国际版）· minimax.io（MiniMax 国际版）
+#   —— 这几个要代理的话，请自行加到 [filter_remote] 里引用的代理规则集。
+
+# ── C. 国产输入法（★ 本轮新增：语音输入依赖国内服务器，最怕被埋点规则误伤）──
+# 背景：输入法的「云输入 / 语音识别 / 词库同步」全都要连国内服务器，
+#       而各家去广告规则会拦一大批 *.sogou.com / log.iflytek.com 之类的域名。
+#       平时拦的是广告和埋点，但一旦误伤【功能域】，表现就是「语音输入没反应」，
+#       而且排查起来毫无头绪（你甚至想不到是代理配置干的）—— 所以直接钉死。
+#
+# 搜狗输入法
+#   ★ 这里【故意不写】 host-suffix, sogou.com：宽匹配会连带放行 26 条
+#     搜狗广告 / 统计 / 导航域（123 / cpc / brand / pv / pingback / theta …），
+#     精确列功能域更划算。若你更在意「语音绝不出问题」，把下面 5 行换成
+#     host-suffix, sogou.com, direct 一行即可（代价：会看到搜狗推广）。
+host-suffix, ime.sogou.com, direct
+host-suffix, pinyin.sogou.com, direct
+host-suffix, shurufa.sogou.com, direct
+host-suffix, wubi.sogou.com, direct
+# 搜狗 CDN（词库 / 皮肤 / 云输入资源；只牺牲 4 条统计域，值得）
+host-suffix, sogoucdn.com, direct
+# 讯飞输入法（xfyun.cn 一行即覆盖 iat-api / ws-api / dt 等全部子域）
+host-suffix, iflytek.com, direct
+host-suffix, xfyun.cn, direct
+host-suffix, iflyink.com, direct
+host-suffix, iflyos.cn, direct
+# 讯飞语音听写 API（顶级域 xf-yun.com 自身无 A 记录，必须单独写）
+host-suffix, iat.xf-yun.com, direct
+# 百度输入法
+#   ★ 只写输入法本体，【不写】 host-suffix, baidu.com ——
+#     写宽匹配会让 mobads.baidu.com 那条开屏去广告失效。
+host-suffix, ime.baidu.com, direct
+host-suffix, mime.baidu.com, direct
+host-suffix, shurufa.baidu.com, direct
+# 手心输入法
+host-suffix, xinshuru.com, direct
+# QQ 输入法
+host-suffix, shurufa.qq.com, direct
+
+# ── D. 语音识别 / 语音合成引擎（输入法与 AI App 共用，本轮新增）──
+# 百度语音：vop = 语音识别 REST API；speech / voice = 语音服务
+host-suffix, vop.baidu.com, direct
+host-suffix, speech.baidu.com, direct
+host-suffix, voice.baidu.com, direct
+# 思必驰（不少输入法 / 车机 / 音箱的语音底子；只牺牲 1 条埋点域）
+host-suffix, aispeech.com, direct
+# 云知声
+host-suffix, unisound.com, direct
+host-suffix, hivoice.cn, direct
+# 捷通华声（灵云）
+host-suffix, sinovoice.com.cn, direct
