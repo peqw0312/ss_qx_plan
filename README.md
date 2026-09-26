@@ -14,7 +14,7 @@
 | `QuantumultX.conf` | 主配置，可直接导入 Quantumult X |
 | `docs/` | 5 份中文文档：使用说明 / 规则总清单 / 导入后验证清单 / 体检与优化方案 / 去广告清单与卡顿排查 |
 | `rules/` | **可直接引用的独立规则集**（见下方「可以单独引用的规则集」一节）——不装整份配置也能用 |
-| `icons/` | 自绘的节点图标（方版，用于替换尺寸不统一的旧图标） |
+| `icons/` | 自绘图标：节点图标（方版）+ **国家图标补充包 24 国**（见下方「国家图标补充包」一节） |
 
 ## 来源与致谢
 
@@ -46,6 +46,7 @@
 | 6 | 图标统一 | 大马节点图标重绘为方版，与 Orz-3 那套同规格（见 `icons/`） |
 | 7 | 修一个卡顿 | 远程规则里 `opt.doubao.com` 被 reject 导致豆包启动变慢，用本地白名单盖掉 |
 | 8 | 国产 AI / 输入法 / 语音引擎直连 | 共 58 行白名单：字节系与国产 AI（含 Kimi / 智谱 / 百川 / 秘塔 / 天工 等）、搜狗 / 讯飞 / 百度 / 手心 / QQ 输入法、讯飞与百度的语音识别 API、思必驰 / 云知声 / 捷通华声 —— 防止去广告规则**每日更新**时误伤「输入法语音」这类功能域 |
+| 9 | 国家图标补充包 | 补齐 Orz-3 图标库里缺失的 **24 个国家/地区**方版图标（南美 12 + 中美加勒比 4 + 欧洲小国 8），见 `icons/flags/` |
 
 完整逐条记录写在 `QuantumultX.conf` 文件头的「共 19 处改动」里。
 
@@ -57,11 +58,11 @@
 2. 粘贴下面的地址：
 
 ```
-https://raw.githubusercontent.com/<你的GitHub用户名>/ss_qx_plan/main/QuantumultX.conf
+https://raw.githubusercontent.com/peqw0312/ss_qx_plan/main/QuantumultX.conf
 ```
 
 > 国内网络直连 `raw.githubusercontent.com` 可能失败，可加加速前缀：
-> `https://ghproxy.net/https://raw.githubusercontent.com/<你的GitHub用户名>/ss_qx_plan/main/QuantumultX.conf`
+> `https://ghproxy.net/https://raw.githubusercontent.com/peqw0312/ss_qx_plan/main/QuantumultX.conf`
 
 ### 方式二 · 手动复制
 
@@ -102,6 +103,28 @@ https://raw.githubusercontent.com/peqw0312/ss_qx_plan/main/rules/domestic-direct
 
 规则集内容为实测所得（逐个 DNS 解析 + 核对去广告规则集的实际拦截项），
 **可自由取用、修改、再分发，无需署名**。
+
+## 国家图标补充包（24 国）
+
+`icons/flags/` 里是 **24 个方版国家/地区图标**（108×108 PNG），用来补齐
+[Orz-3/mini](https://github.com/Orz-3/mini) 图标库里缺失的国家 ——
+它那 336 个图标里，国家/地区类只有 17 个，**南美 / 中美 / 加勒比 / 欧洲小国基本空白**，
+想给「巴西节点」配个同风格的图标都找不到。
+
+覆盖范围：**南美 12 国 + 中美与加勒比 4 国 + 欧洲小国 8 国**，
+规格、光泽、外轮廓都和 Orz-3 同源（风格对比见预览图第一行）。
+
+![国家图标库预览](icons/flags/_preview-24-countries.png)
+
+用法：
+
+```ini
+static=巴西节点, img-url=https://raw.githubusercontent.com/peqw0312/ss_qx_plan/main/icons/flags/BR.png, 节点1, 节点2
+```
+
+⚠️ Quantumult X 的 `img-url=` **只接受公网地址**，不能填本地路径 —— 所以这批图标挂在
+GitHub 上正好能用。完整清单、规格与许可说明见
+[`icons/flags/README.md`](icons/flags/README.md)。
 
 ## 注意事项
 
@@ -149,7 +172,11 @@ ss_qx_plan/
 └── icons/
     ├── 大马节点-方旗版.png
     ├── 大马节点-徽记版-备选.png
-    └── 大马节点-改前改后对比.png
+    ├── 大马节点-改前改后对比.png
+    └── flags/                          ← 国家图标补充包（24 国，108×108 方版）
+        ├── _preview-24-countries.png   预览图
+        ├── README.md                   清单 / 规格 / 许可
+        └── *.png                       24 个两位国家代码
 ```
 
 ## 说明
