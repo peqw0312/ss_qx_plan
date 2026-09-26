@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>墨鱼 2.0 去广告清单与卡顿排查</title>
+<style>
+  :root{
+    --bg:#F7F6F2; --card:#FFFFFF; --line:rgba(0,0,0,.12);
+    --t1:#1F1F1E; --t2:#5F5E5A; --t3:#8A8880;
+    --teal:#0F6E56; --teal-bg:#E1F5EE; --teal-line:#5DCAA5;
+    --red:#A32D2D; --red-bg:#FCEBEB; --red-line:#F09595;
+    --amber:#854F0B; --amber-bg:#FAEEDA; --amber-line:#EF9F27;
+    --gray-bg:#F1EFE8; --gray-line:#D3D1C7;
+    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--t1);
+    font:400 14px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    padding:32px 20px 64px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:22px;font-weight:500;margin:0 0 6px}
+  .sub{font-size:13px;color:var(--t3);margin:0 0 32px}
+  h2{font-size:15px;font-weight:500;margin:36px 0 14px;padding-bottom:8px;border-bottom:.5px solid var(--line)}
+  h3{font-size:14px;font-weight:500;margin:0 0 10px}
+  p{margin:0 0 12px;color:var(--t2)}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--gray-bg);padding:1px 5px;border-radius:4px;color:var(--t1)}
+  strong{color:var(--t1)}
+  .card{background:var(--card);border:.5px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:12px}
+  .card.hot{border-color:var(--red-line);background:var(--red-bg)}
+  .card.good{border-color:var(--teal-line);background:var(--teal-bg)}
+  .card.warn{border-color:var(--amber-line);background:var(--amber-bg)}
+  .card.hot p,.card.hot li{color:#501313}
+  .card.warn p{color:#412402}
+  .item{display:flex;gap:12px;padding:11px 0;border-bottom:.5px solid var(--line);font-size:13px;line-height:1.6}
+  .item:last-child{border-bottom:none}
+  .item .nm{flex:0 0 190px;color:var(--t1);font-weight:500}
+  .item .ds{flex:1;color:var(--t2)}
+  .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:20px;margin-left:6px;font-weight:400}
+  .tag.hi{background:var(--teal-line);color:#04342C}
+  .tag.mid{background:var(--gray-line);color:#2C2C2A}
+  .tag.lo{background:var(--red-line);color:#501313}
+  .step{display:flex;gap:14px;margin-bottom:18px}
+  .step .n{flex:0 0 28px;height:28px;border-radius:50%;background:var(--t1);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;margin-top:2px}
+  .step .bd{flex:1}
+  .step .bd .ttl{font-weight:500;font-size:14px;margin-bottom:5px}
+  .step .bd .ds{font-size:13px;color:var(--t2)}
+  .verdict{font-size:12.5px;color:var(--t3);margin-top:6px;padding-left:12px;border-left:2px solid var(--gray-line)}
+  ul{margin:0 0 12px;padding-left:20px;color:var(--t2)}
+  li{margin-bottom:7px}
+  li::marker{color:var(--t3)}
+  .foot{font-size:12px;color:var(--t3);margin-top:32px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>墨鱼 2.0 去广告清单与卡顿排查</h1>
+  <p class="sub">针对「墨鱼自用 QX 配置 2.0 (V271)」 · 整理于 2026-09-26</p>
+
+  <h2>一、去广告分三层</h2>
+
+  <div class="card">
+    <h3>第一层：域名拦截（1 套规则集）<span class="tag mid">静默生效</span></h3>
+    <div class="item"><div class="nm">广告终结者</div><div class="ds">Cats-Team/AdRules，每天自动更新。把广告域名的请求直接掐断。</div></div>
+    <div class="item"><div class="nm">规则修正</div><div class="ds">作者自己维护的 Unbreak.list，专门修「广告规则误杀了正常功能」的情况。</div></div>
+    <p style="font-size:12.5px;color:var(--t3);margin:10px 0 0">这一层<strong>不弹提示、不计数</strong>，你只是看不到广告而已，所以完全没有「效果感」。想确认它在干活，只能去请求记录里看有没有大量被标成拦截的请求。</p>
+  </div>
+
+  <div class="card">
+    <h3>第二层：12 条重写（需要 MitM 证书）</h3>
+    <div class="item"><div class="nm">墨鱼去开屏 2.0<span class="tag hi">最明显</span></div><div class="ds">全 App 通用的开屏广告拦截</div></div>
+    <div class="item"><div class="nm">油管去广告</div><div class="ds">YouTube 视频前贴片、横幅广告</div></div>
+    <div class="item"><div class="nm">哔哩广告净化 Lite</div><div class="ds">B站 去广告 + 1080P 高码率</div></div>
+    <div class="item"><div class="nm">Spotify 音乐 VIP</div><div class="ds">音质解锁到「高」</div></div>
+    <div class="item"><div class="nm">微博去广告</div><div class="ds">信息流广告</div></div>
+    <div class="item"><div class="nm">知乎净化助手</div><div class="ds">脚本类，去信息流广告</div></div>
+    <div class="item"><div class="nm">小红书净化 + 去水印</div><div class="ds">信息流广告、下载图去水印</div></div>
+    <div class="item"><div class="nm">网易云净化</div><div class="ds">播放页、评论区广告</div></div>
+    <div class="item"><div class="nm">百度网盘净化 + 倍速</div><div class="ds">开屏、应用内广告，解锁会员倍速</div></div>
+    <div class="item"><div class="nm">彩云天气净化</div><div class="ds">天气页广告</div></div>
+    <div class="item"><div class="nm">高德地图净化<span class="tag lo">需卸载重装</span></div><div class="ds">不做卸载重装这一步，这条一直是废的</div></div>
+    <div class="item"><div class="nm">闲鱼净化<span class="tag lo">需卸载重装</span></div><div class="ds">同上</div></div>
+  </div>
+
+  <div class="card">
+    <h3>第三层：6 条功能增强（不是去广告）</h3>
+    <div class="item"><div class="nm">Safari 超级搜索</div><div class="ds">搜索框增强</div></div>
+    <div class="item"><div class="nm">豆瓣观影快捷跳转</div><div class="ds">网页上加播放入口</div></div>
+    <div class="item"><div class="nm">Google 重定向</div><div class="ds">解决 Google 域名跳转</div></div>
+    <div class="item"><div class="nm">微信解锁被屏蔽 URL</div><div class="ds">微信内打开被屏蔽的链接</div></div>
+    <div class="item"><div class="nm">百度网盘倍速</div><div class="ds">脚本类，解锁播放倍速</div></div>
+    <div class="item"><div class="nm">BOXJS</div><div class="ds">脚本运行环境，给其他脚本用的</div></div>
+  </div>
+
+  <h2>二、为什么你感知不明显</h2>
+  <div class="card">
+    <ul>
+      <li><strong>12 条里有 10 条是单 App 专用的。</strong>你没装、或很少用的 App，装了等于没装。</li>
+      <li><strong>两条必须卸载重装才生效</strong>（高德地图、闲鱼）。作者在名字里标了「卸载重装」，多数人不会做这步，于是这两条一直是废的。</li>
+      <li><strong>开屏广告只能去一部分。</strong>很多 App 的开屏是本地资源或走非 HTTP 通道，重写拦不到。</li>
+      <li><strong>远程重写是别人维护的，会失效。</strong>作者的更新日志里反复出现「新版已无需重写」「已失效」「年久失修故删除」——你这份是 2026/09 的，里面的重写跟没跟上 App 新版本，没人保证。</li>
+      <li><strong>它天生没有「效果感」。</strong>去广告不会告诉你「我拦了 3 个」，你只是看不到广告而已。</li>
+    </ul>
+  </div>
+
+  <h2>三、反直觉的一点：去广告本身可能让你觉得卡</h2>
+  <div class="card warn">
+    <p style="margin:0 0 10px">广告请求被掐断后，App 往往不会立刻放弃，而是<strong>重试或等超时</strong>再渲染页面 —— 首屏反而更慢。</p>
+    <p style="margin:0 0 10px">开屏广告被拦掉后，App 要等一个兜底超时才能进主页 —— 你的感受是「卡在启动页」。</p>
+    <p style="margin:0"><strong>你感知不到收益，却在为它付卡顿的成本。那它对你就是负收益，应该砍掉大部分。</strong></p>
+  </div>
+
+  <h2>四、卡顿排查：三步，全部不用改配置文件</h2>
+
+  <div class="step">
+    <div class="n">1</div>
+    <div class="bd">
+      <div class="ttl">看请求记录，判断国内流量走的是哪条路</div>
+      <div class="ds">圈X 里找「请求记录 / 网络活动」入口，打开一个国内 App（淘宝、微信、抖音）刷几下，回来看这些请求的「策略」一列。</div>
+      <div class="verdict">显示某个<strong>节点名</strong> → 确诊「国内流量绕道出国」。这是最贵的一种卡，去把 GeoLite2 数据库配好（见上一份方案）。<br>显示 <code>direct</code> → 分流没问题，看第 2 步。</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">2</div>
+    <div class="bd">
+      <div class="ttl">把 18 条重写全部临时关掉，再试一次</div>
+      <div class="ds">圈X → 设置 → 重写 → 远程列表，把开关全部关掉（不用删，随时能开回来）。然后重新打开刚才那个 App。</div>
+      <div class="verdict">明显不卡了 → 就是 MitM 解密和脚本的开销。既然你感知不到去广告的收益，那就精简重写，只留你真用得上的几条件。<br>还是一样卡 → 去第 3 步。</div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="n">3</div>
+    <div class="bd">
+      <div class="ttl">手动锁定一个节点，排除自动切换</div>
+      <div class="ds">配置里「自动选择」策略组每 20 分钟测速一次，而且 <code>tolerance=0</code>（容差为零）—— 意味着只要另一个节点稍微快一点，它就会切过去。节点来回切会造成断流和卡顿。</div>
+      <div class="verdict">在圈X 首页点「自动选择」那一组，手动指定一个你信得过的具体节点，用一段时间。<br>不卡了 → 就是切换抖动。把 <code>tolerance</code> 从 0 调大（比如 50 或 100），或者干脆一直用手动指定。<br>还卡 → 那问题在节点本身或你的网络环境。</div>
+    </div>
+  </div>
+
+  <h2>五、我的建议</h2>
+  <div class="card good">
+    <p style="margin:0 0 10px"><strong>先做排查，再动配置。</strong>三步都在界面里点，随时可以退出来，零风险。</p>
+    <p style="margin:0 0 10px">排查完大概率会得出同一个结论：<strong>那 18 条重写对你收益太低、成本太高，该砍。</strong>我倾向于给你砍到 3 到 5 条 —— 只留「去开屏」和你在用的那几个 App，其余全删。这样既省开销，又不用你再关心那些失效的条目。</p>
+    <p style="margin:0">到时候连着你那份走代理的名单，我一次把配置改完给你。</p>
+  </div>
+
+  <p class="foot">
+    本清单基于你提供的配置文件原文逐行核对，原文件保存在工作区：<code>QuantumultX_original.conf</code>。<br>
+    在你确认之前，我不会改动任何配置。
+  </p>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>圈X 体检与优化方案</title>
+<style>
+  :root{
+    --bg:#F7F6F2; --card:#FFFFFF; --line:rgba(0,0,0,.12); --line2:rgba(0,0,0,.25);
+    --t1:#1F1F1E; --t2:#5F5E5A; --t3:#8A8880;
+    --teal:#0F6E56; --teal-bg:#E1F5EE; --teal-line:#5DCAA5;
+    --red:#A32D2D; --red-bg:#FCEBEB; --red-line:#F09595;
+    --amber:#854F0B; --amber-bg:#FAEEDA; --amber-line:#EF9F27;
+    --blue:#0C447C; --blue-bg:#E6F1FB; --blue-line:#85B7EB;
+    --gray-bg:#F1EFE8; --gray-line:#D3D1C7;
+    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--t1);
+    font:400 14px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    padding:32px 20px 64px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:22px;font-weight:500;margin:0 0 6px}
+  .sub{font-size:13px;color:var(--t3);margin:0 0 32px}
+  h2{font-size:15px;font-weight:500;margin:36px 0 14px;padding-bottom:8px;border-bottom:.5px solid var(--line)}
+  h3{font-size:14px;font-weight:500;margin:0 0 10px}
+  p{margin:0 0 12px;color:var(--t2)}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--gray-bg);
+    padding:1px 5px;border-radius:4px;color:var(--t1)}
+  .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px}
+  .mini{background:var(--card);border:.5px solid var(--line);border-radius:12px;padding:14px 16px}
+  .mini .lb{font-size:12px;color:var(--t3);margin-bottom:4px}
+  .mini .vl{font-size:13.5px;color:var(--t1);font-weight:500;line-height:1.5}
+  .card{background:var(--card);border:.5px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:12px}
+  .card.hot{border-color:var(--red-line);background:var(--red-bg)}
+  .card.good{border-color:var(--teal-line);background:var(--teal-bg)}
+  .badge{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:1px}
+  .badge.r{background:var(--red-line);color:#501313}
+  .badge.t{background:var(--teal-line);color:#04342C}
+  .badge.a{background:var(--amber-line);color:#412402;margin-left:0}
+  .row{display:flex;gap:10px;margin-top:8px;font-size:13px;line-height:1.65}
+  .row .k{flex:0 0 56px;color:var(--t3);font-size:12px;padding-top:2px}
+  .row .v{flex:1;color:var(--t2)}
+  .hot .row .v{color:#501313}
+  .hot .row .k{color:#A32D2D}
+  ul{margin:0;padding-left:20px;color:var(--t2)}
+  li{margin-bottom:7px}
+  li::marker{color:var(--t3)}
+  .keep li{color:var(--t2)}
+  .divider{height:1px;background:var(--line);margin:28px 0}
+  .foot{font-size:12px;color:var(--t3);margin-top:32px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>圈X 体检与优化方案</h1>
+  <p class="sub">针对你正在用的「墨鱼自用 QX 配置 2.0 (V271)」 · 整理于 2026-09-26</p>
+
+  <h2>一句话结论</h2>
+  <div class="grid3">
+    <div class="mini">
+      <div class="lb">你在用的配置</div>
+      <div class="vl">墨鱼 2.0<br><span style="font-weight:400;color:var(--t2)">默认走代理 · 国内靠规则捞</span></div>
+    </div>
+    <div class="mini">
+      <div class="lb">你的真实目标</div>
+      <div class="vl">国内常用服务不卡<br><span style="font-weight:400;color:var(--t2)">去广告保持现状就行</span></div>
+    </div>
+    <div class="mini">
+      <div class="lb">差距在哪</div>
+      <div class="vl">国内流量没被稳稳接住<br><span style="font-weight:400;color:var(--t2)">漏网的掉进了代理出口</span></div>
+    </div>
+  </div>
+  <p>好消息是：<strong>这份配置的去广告做得很好，你确认过确实生效了，那部分我们一个字都不动。</strong>需要修的只有一件事 —— 让国内流量老老实实走直连。</p>
+
+  <h2>第一步：先体检，不改任何配置（零风险）</h2>
+  <p>下面 5 项全部在圈X 界面里点着看，不动配置文件，随时可以退出来。建议按顺序做，第 1 项最关键。</p>
+
+  <div class="card hot">
+    <h3>体检 1 · GeoLite2 数据库 <span class="badge r">最关键</span></h3>
+    <div class="row"><div class="k">去哪看</div><div class="v">圈X → 设置 → 其他设置 → GeoLite2</div></div>
+    <div class="row"><div class="k">看什么</div><div class="v">① 「来源」里有没有填链接？② 「自动更新」开了没有？③ 显示的数据日期是不是最近的？</div></div>
+    <div class="row"><div class="k">为什么</div><div class="v">你配置里 <code>geoip, cn, direct</code> 这一行是国内直连的最后一道保险，它必须去查 GeoLite2 数据库（作者在配置开头专门写了这条提醒）。<strong>数据库没配或过期，这一行就等于不存在</strong> —— 国内域名一路掉到最后的代理出口，就变成你现在感觉到的卡。</div></div>
+  </div>
+
+  <div class="card">
+    <h3>体检 2 · 节点订阅</h3>
+    <div class="row"><div class="k">去哪看</div><div class="v">圈X → 设置 → 节点 / 服务器 → 订阅</div></div>
+    <div class="row"><div class="k">看什么</div><div class="v">是不是只有一条，tag 叫「🐟临时使用」？</div></div>
+    <div class="row"><div class="k">为什么</div><div class="v">这条来自公开免费节点池，作者自己标注了「仅供临时使用」，每小时刷新。几十上百人共用、随时失效。<strong>走代理的东西卡，根子多半在这儿，跟规则无关。</strong></div></div>
+  </div>
+
+  <div class="card">
+    <h3>体检 3 · 请求记录（最有说服力的证据）</h3>
+    <div class="row"><div class="k">去哪看</div><div class="v">圈X 里找「请求记录 / 网络活动」这类入口（不同版本叫法不同，找不到就截图问我）</div></div>
+    <div class="row"><div class="k">怎么做</div><div class="v">打开一个国内 App（淘宝、微信、抖音都行）刷几下，然后回来翻记录</div></div>
+    <div class="row"><div class="k">看什么</div><div class="v">这些请求的「策略」一列，显示的是 <code>direct</code> 还是某个节点名</div></div>
+    <div class="row"><div class="k">怎么判断</div><div class="v">显示节点名 → 确诊「国内流量被送出国」，按体检 1 去修；<br>显示 direct → 分流没问题，卡的原因在别处（多半是节点慢或 UDP 限制）</div></div>
+  </div>
+
+  <div class="card">
+    <h3>体检 4 · 两个开关的正确状态</h3>
+    <div class="row"><div class="k">开关 A</div><div class="v"><code>兼容性增强</code> —— <strong>保持关闭</strong>。作者说明了：打开会让微博等 App 的去广告失效。</div></div>
+    <div class="row"><div class="k">开关 B</div><div class="v"><code>分流匹配优化</code> —— 建议<strong>关闭</strong>，作者在配置说明里的原话建议。</div></div>
+    <div class="row"><div class="k">去哪</div><div class="v">一般在 设置 → 「VPN」或「其他设置」栏里</div></div>
+  </div>
+
+  <div class="card">
+    <h3>体检 5 · 顺手把 GeoLite2 来源填上</h3>
+    <div class="row"><div class="k">做什么</div><div class="v">体检 1 如果发现没填，把下面任意一条贴进「来源」，并打开自动更新：</div></div>
+    <div class="row"><div class="k"></div><div class="v"><code>https://raw.githubusercontent.com/Loyalsoldier/geoip/release/Country.mmdb</code><br><br><code>https://github.com/Hackl0us/GeoIP2-CN/raw/release/Country.mmdb</code></div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <h2>第二步：等你给名单后我再动手（暂时不做）</h2>
+  <p>你说走代理的服务清单后期再给，所以这一步现在不碰。等你告诉我之后，我会做这几件事：</p>
+  <ul>
+    <li>按你的名单逐项对应到现成的规则集，或者按需新写几条，保证不漏域名</li>
+    <li>如果体检 3 查出国内流量确实被送出国，再补一道<strong>域名级</strong>的国内直连保险（比现在按 IP 判断的两道更快、更稳）</li>
+    <li>把所有改动整理成一份可以直接替换的配置，附上逐行注释</li>
+  </ul>
+  <p style="font-size:13px;color:var(--t3)">注：国内直连的候选规则集我核实过一个主流的，叫 ChinaMax，124,108 条规则。它很全，但会让圈X 变沉。所以我倾向于先用体检修，不急着堆规则 —— 你的 iPhone 不是服务器。</p>
+
+  <h2>这些地方一个字都别动</h2>
+  <div class="card good keep">
+    <ul>
+      <li><strong>18 条远程重写</strong> —— 墨鱼去开屏 2.0、油管去广告、微博、知乎、小红书、网易云、高德、闲鱼、彩云天气、B站、豆瓣、Safari 超级搜索、百度网盘净化 + 倍速、微信解锁被屏蔽 URL、BOXJS。这些就是你确认生效的去广告，动它只会让 App 出毛病。</li>
+      <li><strong>「广告终结者」规则集</strong> —— 域名级拦截，每天自动更新，是好东西。</li>
+      <li><strong><code>[mitm]</code> 那一行</strong> —— 里面带减号的（<code>-testflight.apple.com</code>、<code>-*amemv.com</code> 等）是「排除项」，表示这些域名不解密；真正要解密的主机名由上面 18 条重写自带，圈X 会自动合并。这就是你朋友圈能去广告的原因。</li>
+      <li><strong><code>[dns]</code> 段</strong> —— 阿里 / 腾讯 / 114 混搭，没毛病。</li>
+    </ul>
+  </div>
+
+  <h2>两个坑，提前说清楚</h2>
+  <div class="card">
+    <h3>坑一：节点是免费公开的</h3>
+    <p style="margin:0">整份配置里只有一条节点订阅，来自公开免费池。改完分流如果还是卡，问题在这儿。<strong>这不是你配错了，是这份「懒人配置」自带的坑</strong> —— 它配的是规则，配不了节点质量。想彻底解决只有这一条路：换一个自己买的、独享的订阅。</p>
+  </div>
+  <div class="card">
+    <h3>坑二：UDP 443 被丢弃</h3>
+    <p style="margin:0">配置里有 <code>udp_drop_list = 443, STUN, QUIC</code>，等于禁用了 QUIC 协议。这是作者为了稳定性故意设的，一般不用改。但如果你玩需要 UDP 的游戏、或者某些 App 明显比别的慢，可以把这一项删掉试试 —— 这个动作是可逆的，改回去就行。</p>
+  </div>
+
+  <p class="foot">
+    本方案基于你提供的配置文件原文逐行核对，配置文件已保存在工作区：<code>QuantumultX_original.conf</code>。<br>
+    在你确认之前，我不会改动任何配置。
+  </p>
+
+</div>
+</body>
+</html>

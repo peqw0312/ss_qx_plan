@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圈X 定制版 · 使用说明</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1c1f23; --ink2:#5b6470;
+    --line:#e4e7ec; --accent:#2f6fed; --accent-soft:#eef3ff;
+    --ok:#0f8a52; --ok-soft:#eaf7f0; --warn:#b8860b; --warn-soft:#fdf6e3;
+    --danger:#c0392b; --danger-soft:#fdeceb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:32px 20px 64px;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.3px}
+  .sub{color:var(--ink2);font-size:14px;margin:0 0 28px}
+  h2{font-size:19px;margin:36px 0 14px;padding-left:12px;border-left:4px solid var(--accent)}
+  h3{font-size:15px;margin:22px 0 8px;color:var(--ink)}
+  p{margin:10px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
+  table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);
+        border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th{background:#f0f2f6;text-align:left;padding:10px 12px;font-weight:600;font-size:13px;color:var(--ink2)}
+  td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+  code{background:#eef0f4;padding:2px 6px;border-radius:5px;font-size:13px;
+       font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+  .pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:600}
+  .p-blue{background:var(--accent-soft);color:var(--accent)}
+  .p-ok{background:var(--ok-soft);color:var(--ok)}
+  .p-warn{background:var(--warn-soft);color:var(--warn)}
+  .p-red{background:var(--danger-soft);color:var(--danger)}
+  .note{border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px}
+  .n-warn{background:var(--warn-soft);border:1px solid #f0e3b8}
+  .n-danger{background:var(--danger-soft);border:1px solid #f5cdc9}
+  .n-ok{background:var(--ok-soft);border:1px solid #c9e9d7}
+  .n-info{background:var(--accent-soft);border:1px solid #d3e0fb}
+  ol,ul{padding-left:22px;margin:10px 0}
+  li{margin:7px 0}
+  .step{font-weight:600;color:var(--accent)}
+  .small{font-size:13px;color:var(--ink2)}
+  .kv{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .new{background:#fffbe6;border-left:3px solid #e8b931;padding:1px 6px;border-radius:3px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>圈X 定制版 · 使用说明</h1>
+  <p class="sub">基于「墨鱼自用 QX 配置 2.0 (V271)」改造 · 2026-09-26 · 共 4 处改动，其余全部保持原样</p>
+
+  <h2>一、你点名的 8 个，落地成了什么</h2>
+
+  <table>
+    <tr><th style="width:26%">你要的服务</th><th style="width:30%">对应规则集</th><th style="width:20%">规则条数</th><th>出口</th></tr>
+    <tr><td><b>X</b>（原 Twitter）</td><td>Twitter.list</td><td>33 条<br><span class="small">含 6 条 IP 段</span></td><td><span class="pill p-blue">代理应用</span></td></tr>
+    <tr><td><b>Telegram</b></td><td>Telegram.list</td><td>40 条<br><span class="small">含 6 段 IP + 5 个 ASN</span></td><td><span class="pill p-blue">代理应用</span></td></tr>
+    <tr><td><b>YouTube</b></td><td>YouTube.list</td><td>196 条<br><span class="small">最全的一套</span></td><td><span class="pill p-blue">代理应用</span></td></tr>
+    <tr><td><b>Twitch</b></td><td>Twitch.list</td><td>21 条<br><span class="small">含 11 段 IP</span></td><td><span class="pill p-blue">代理应用</span></td></tr>
+    <tr><td><b>Discord</b></td><td>Discord.list</td><td>29 条</td><td><span class="pill p-blue">代理应用</span></td></tr>
+    <tr><td><b>Instagram</b></td><td>Instagram.list</td><td>4 条<br><span class="small">1 条关键词能覆盖 CDN</span></td><td><span class="pill p-blue">代理应用</span></td></tr>
+    <tr><td><b>Threads</b></td><td>Threads.list + 2 条本地</td><td>3 条<br><span class="small">官方库较旧，我补了 2 条</span></td><td><span class="pill p-blue">代理应用</span></td></tr>
+    <tr><td><b>Safari 浏览器</b></td><td>—</td><td>—</td><td><span class="pill p-warn">靠「全球加速」</span></td></tr>
+  </table>
+
+  <div class="note n-info">
+    <b>「代理应用」是什么？</b> 我在策略组里新加的一个组。你点名的 7 个服务全部指向它，默认出口是「自动选择」，你也可以在圈X 首页点这个组，手动锁定到某个具体节点（比如美国节点）。
+  </div>
+
+  <h2>二、Safari 那一条，必须单独说清楚</h2>
+
+  <div class="note n-warn">
+    <b>圈X 不认识「浏览器」，只认识域名。</b><br>
+    「让 Safari 走代理」在技术上等于「让 Safari 里访问的<u>所有网站</u>都走代理」—— 这几乎就是「全部走代理」了。<br><br>
+    所以这一条的正确实现方式，是用规则表的兜底逻辑：<b>国外网站走代理，国内网站走直连</b>。这件事正好由你配置里<b>原有的「全球加速」规则集</b>承担，<b>我没有动它</b>。
+  </div>
+
+  <p>换句话说：你要的 Safari 效果，在你保留「全球加速」这个选择的那一刻就已经成立了 —— <b>你在 Safari 里打开国外网站会自动走代理，打开国内网站会自动直连</b>，不需要额外写任何规则。</p>
+
+  <p class="small">这也回答了上一轮那个看似矛盾的问题：你要「只有几个走代理」，又列了「Safari」。这两条不能同时成立 —— 后者要求国外网站普遍可访问，那就必须有「全球加速」这种兜底。我按<b>后者</b>处理了。</p>
+
+  <h2>三、怎么把它装上去</h2>
+
+  <h3>方式 A：导入配置文件（推荐，一次搞定）</h3>
+  <ol>
+    <li>把 <code>QuantumultX_定制版.conf</code> 发到手机上，存进「文件」App（iCloud Drive 里最方便）。</li>
+    <li>打开圈X → <b>设置</b> → <b>配置文件</b>（你的版本可能叫「其他设置」里的「配置文件」）。</li>
+    <li>选择<b>从文件导入</b> / <b>从本地导入</b>，选中那个 .conf 文件。</li>
+    <li>导入成功后，圈X 会用它作为当前配置。<b>这时先把配置的自动更新关掉</b>，否则下次更新会把你这份覆盖回原版。</li>
+  </ol>
+
+  <div class="note n-danger">
+    <b>⚠️ 一个必须知道的取舍：</b>导入本地配置后，墨鱼原作者的后续更新<b>不会再自动进来</b>。以后你想跟上原版，就把最新原版发我，我重新合并一份给你 —— 这个流程我可以重复做，不用你动手。
+  </div>
+
+  <h3>方式 B：在界面里手动加（保留原订阅的自动更新）</h3>
+  <ol>
+    <li><b>设置 → 策略组 → 添加</b>：名称填 <code>代理应用</code>，类型选<b>静态</b>，然后依次加入这些选项：<code>自动选择</code>、<code>direct</code>、<code>美国节点</code>、<code>香港节点</code>、<code>日本节点</code>、<code>狮城节点</code>、<code>台湾节点</code>、<code>proxy</code>。</li>
+    <li><b>设置 → 分流 → 远程 → 添加</b>：把下面 7 条逐条加进去，策略都选 <code>代理应用</code>。</li>
+    <li><b>设置 → 分流 → 本地 → 添加</b>：加两条 <code>host-suffix, threads.com, 代理应用</code> 和 <code>host-suffix, threads.net, 代理应用</code>。</li>
+  </ol>
+  <p class="small">7 条规则集地址（复制用）：</p>
+  <div class="card" style="font-size:12.5px;line-height:2">
+    <code>…/QuantumultX/Twitter/Twitter.list</code><br>
+    <code>…/QuantumultX/Telegram/Telegram.list</code><br>
+    <code>…/QuantumultX/YouTube/YouTube.list</code><br>
+    <code>…/QuantumultX/Twitch/Twitch.list</code><br>
+    <code>…/QuantumultX/Discord/Discord.list</code><br>
+    <code>…/QuantumultX/Instagram/Instagram.list</code><br>
+    <code>…/QuantumultX/Threads/Threads.list</code>
+    <div class="small" style="margin-top:6px">前缀统一是 <code>https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule</code></div>
+  </div>
+
+  <h2>四、装完立刻验证（2 分钟）</h2>
+  <ol>
+    <li>打开 YouTube 或 Telegram，刷一下。</li>
+    <li>回到圈X → <b>请求记录</b>（或叫「网络活动」），找到刚才那些请求。</li>
+    <li>看「策略」那一列，应该显示 <b>代理应用</b>，而不是 <b>兜底分流 / 全球加速</b>。</li>
+    <li>顺便看一眼<b>国内 App</b>（淘宝、微信）的请求，应该显示 <code>direct</code>。</li>
+  </ol>
+
+  <div class="note n-ok">
+    <b>如果国内请求显示的是节点名而不是 direct</b> —— 那不是规则的错，是你没配 GeoLite2 数据库。<br>
+    你配置里国内直连的两道保险（<code>geoip, cn</code> 和「国内网站」规则集）<b>都是按 IP 判断的，必须查数据库</b>。去 <b>设置 → 其他设置 → GeoLite2</b>，把来源填上配置里给的那两个链接之一，并打开「自动更新」。<br>
+    这一条很可能就是你之前觉得「开了代理就卡」的真正原因。
+  </div>
+
+  <h2>五、三个坑，提前说</h2>
+
+  <h3>1. Discord 语音 / Telegram 通话可能不通</h3>
+  <p>这两个的<b>语音功能走 UDP</b>。圈X 能不能转发 UDP，<b>取决于你的节点支不支持 UDP</b>，跟规则无关。如果你只是想看消息、刷视频，不受影响；要打语音，得用一个支持 UDP 的节点。</p>
+
+  <h3>2. 别提前这条规则的位置</h3>
+  <p>新增的 7 条规则集，位置卡在「广告终结者」<b>之后</b>。这个顺序不能往上调 —— 否则视频站的内嵌广告域名会先被送进代理，去广告就失效了。</p>
+
+  <h3>3. 「自动选择」会来回切节点</h3>
+  <p>你配置里 <code>tolerance=0</code>，意思是<b>只要另一个节点快一点点就会切过去</b>。节点频繁切换会造成断流，感受就是「莫名其妙卡一下」。<br>
+    两个办法：① 在圈X 首页把「代理应用」手动锁到一个固定节点；② 把 <code>tolerance=0</code> 改成 <code>tolerance=50</code>。</p>
+
+  <h2>六、这次一共改了哪 4 处</h2>
+  <div class="card">
+    <div class="kv"><span class="pill p-blue">① 新增策略组</span>「代理应用」</div>
+    <div class="kv"><span class="pill p-blue">② 新增 7 条规则集</span>→ 强制走「代理应用」</div>
+    <div class="kv"><span class="pill p-blue">③ 新增 2 条本地规则</span>threads.com / threads.net</div>
+    <div class="kv"><span class="pill p-red">④ 兜底改为直连</span>final, 兜底分流 → final, direct</div>
+  </div>
+
+  <h3>第 ④ 处为什么必须改</h3>
+  <div class="note n-danger">
+    <b>这就是国内 App 变慢的根源。</b><br>
+    你原配置的兜底是「走代理」—— 也就是<b>只要前面没匹配上，一律送出国</b>。而负责把国内流量「捞回来」的只有两道规则（<code>geoip, cn</code> 和「国内网站」规则集），<b>两道都是按 IP 判断、都必须查 GeoLite2 数据库</b>。数据库没配，两道全失效，国内 App 就一路掉到兜底出国 —— <b>这就是 Soul 慢的原因</b>。<br><br>
+    微信有专门的「微信直连」规则集护着，所以从来没这个问题。这就是「为什么偏偏是 Soul」。
+  </div>
+
+  <div class="note n-warn">
+    <b>代价（必须知道）：</b>被墙、但没被收录进「全球加速」名单里的<b>冷门国外站点</b>，现在会直连、可能打不开。主流站点（Google、YouTube、X、Instagram、Telegram、GitHub 等）都在名单里，不受影响。<br>
+    <b>遇到打不开的国外站，把网址发我，我给你加进「代理应用」组。</b>
+  </div>
+
+  <div class="note n-ok">
+    <b>仍然一个字没动：</b>去广告 18 条重写、广告终结者规则集、节点订阅、全球加速、DNS 设置、MitM 主机名。<br>
+    想整体回退到原版，重新导入墨鱼原配置即可；只回退第 ④ 处，把那一行还原成 <code>final, 兜底分流</code>。
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圈X 定制版 · 导入后验证清单</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1c1f23; --ink2:#5b6470;
+    --line:#e4e7ec; --accent:#2f6fed; --accent-soft:#eef3ff;
+    --ok:#0f8a52; --ok-soft:#eaf7f0; --warn:#b8860b; --warn-soft:#fdf6e3;
+    --danger:#c0392b; --danger-soft:#fdeceb; --gray-soft:#eef0f4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:32px 20px 64px;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.3px}
+  .sub{color:var(--ink2);font-size:14px;margin:0 0 28px}
+  h2{font-size:19px;margin:40px 0 14px;padding-left:12px;border-left:4px solid var(--accent)}
+  h3{font-size:15px;margin:22px 0 8px;color:var(--ink)}
+  p{margin:10px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);
+        border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:12px 0}
+  th{background:#f0f2f6;text-align:left;padding:9px 11px;font-weight:600;font-size:12.5px;color:var(--ink2)}
+  td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:top}
+  td.num{color:var(--ink2);font-variant-numeric:tabular-nums;width:34px}
+  code{background:var(--gray-soft);padding:1px 5px;border-radius:4px;font-size:12.5px;
+       font-family:ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
+  pre{background:#f2f4f8;border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12.5px;line-height:1.6;margin:10px 0}
+  .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:600;white-space:nowrap}
+  .p-blue{background:var(--accent-soft);color:var(--accent)}
+  .p-ok{background:var(--ok-soft);color:var(--ok)}
+  .p-warn{background:var(--warn-soft);color:var(--warn)}
+  .p-red{background:var(--danger-soft);color:var(--danger)}
+  .p-gray{background:var(--gray-soft);color:var(--ink2)}
+  .note{border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px}
+  .n-warn{background:var(--warn-soft);border:1px solid #f0e3b8}
+  .n-danger{background:var(--danger-soft);border:1px solid #f5cdc9}
+  .n-ok{background:var(--ok-soft);border:1px solid #c9e9d7}
+  .n-info{background:var(--accent-soft);border:1px solid #d3e0fb}
+  ol,ul{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  .small{font-size:12.5px;color:var(--ink2)}
+  .tier{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0;margin:16px 0;overflow:hidden}
+  .tier-head{padding:12px 18px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line);background:#fafbfc}
+  .tier-body{padding:14px 18px}
+  .bf{color:var(--ink2);font-weight:400;font-size:13px}
+  label.step{display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin:9px 0}
+  label.step input{margin:5px 0 0;flex:none;width:16px;height:16px;accent-color:var(--accent)}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+  .kv-row{display:flex;gap:10px;margin:7px 0;font-size:13.5px}
+  .k{flex:none;width:66px;color:var(--ink2);font-weight:600}
+  .v{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>圈X 定制版 · 导入后验证清单</h1>
+  <p class="sub">照着做 · 每一步都有明确的「预期结果」和「不符预期说明什么」· 全程在圈X 界面里完成，不需要改文件</p>
+
+  <div class="note n-info">
+    <b>先搞清楚你要看的那一列：策略。</b><br>
+    这份清单里几乎所有验证，都是看同一件事 —— <b>请求记录里的「策略」列</b>。<br>
+    打开方式：<b>圈X → 首页左上角的三横线（或底部的图表图标）→ 网络活动 / 请求记录 / Activity</b>
+    <span class="small">（不同版本叫法不同，找带「活动」「记录」「日志」字样的那个）</span><br>
+    打开后每个请求会显示：域名 · 时间 · <b>策略</b> · 流量。策略这一列就是答案。
+  </div>
+
+  <h2>零、动手测试前，先确认 3 件事</h2>
+  <p class="small">这三件不做，后面测出来的结果没有意义。</p>
+
+  <div class="tier">
+    <div class="tier-head">① 确认配置不会被自动覆盖回原版</div>
+    <div class="tier-body">
+      <div class="kv-row"><span class="k">去这里</span><span class="v"><b>设置 → 配置文件</b></span></div>
+      <div class="kv-row"><span class="k">看什么</span><span class="v">当前生效的配置是哪个？是「从文件导入」的本地配置，还是通过 URL 添加的远程配置？</span></div>
+      <div class="kv-row"><span class="k">判断</span><span class="v">
+        · 如果是<b>本地导入</b> → 安全，不用管<br>
+        · 如果是<b>URL 添加</b>的 → 必须关掉它的<b>自动更新</b>开关。否则它会把你的定制版覆盖回墨鱼原版，所有改动归零。
+      </span></div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-head">② 检查 MitM 证书还在不在 <span class="bf">—— 决定去广告能不能生效</span></div>
+    <div class="tier-body">
+      <p style="margin-top:0">这不是多余的担心：证书信息（<code>p12=</code> 和 <code>passphrase=</code> 两行）是<b>你本地生成的</b>，不在下载的配置文件里。换配置文件时它有可能丢。</p>
+      <div class="kv-row"><span class="k">去这里</span><span class="v"><b>设置 → MitM</b></span></div>
+      <div class="kv-row"><span class="k">看什么</span><span class="v">顶部有没有证书信息？「证书信任」是不是正常状态？</span></div>
+      <div class="kv-row"><span class="k">判断</span><span class="v">
+        · <b>有证书</b> → 跳过，去下一项<br>
+        · <b>没有证书 / 提示未生成</b> → 点一次「生成证书」。系统的信任通常还在（根证书没换）；如果 App 提示证书失效，需要重新下载描述文件并在 <b>设置 → 通用 → 关于本机 → 证书信任设置</b> 里打开它。
+      </span></div>
+      <div class="note n-warn" style="margin-bottom:0">
+        <b>为什么这件事一定要做：</b>9 条重写里，去开屏、油管、微博、知乎、网易云、B站 这几条<b>都要靠 MitM 解密才能生效</b>。
+        证书不在，它们就是摆设 —— 这也是很多人「装完发现去广告没效果」的真正原因。
+      </div>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-head">③ 看一眼策略组里有没有节点</div>
+    <div class="tier-body">
+      <div class="kv-row"><span class="k">去这里</span><span class="v"><b>圈X 首页</b>（就是显示各策略组和节点延迟的那一屏）</span></div>
+      <div class="kv-row"><span class="k">要确认</span><span class="v">
+        <b>1.</b> 「自动选择」组里有节点、有延迟数字 —— 说明节点订阅正常<br>
+        <b>2.</b> 新加的 <b>韩国节点 / 英国节点 / 大马节点 / 德国节点 / 火鸡节点</b> 五个组里有没有节点<br>
+        <b>3.</b> 「Soul」组和「交易所」组是否正常显示<br>
+        <b>4.</b> 顺手看一眼 <b>大马节点</b> 的图标 —— 是不是已经变成和其它地区组一样的<b>正方形</b>（原来是长方形）
+      </span></div>
+      <div class="kv-row"><span class="k">不符预期</span><span class="v">
+        五个新地区组里有空的 → 说明你的节点名里不含匹配关键词（如「韩 / KR / Korea」）。<b>给节点改个名</b>（在节点上长按 → 重命名，加上地区字）就会自动归组。
+        <span class="small">它们匹配的是：韩|KR|Korea|Seoul · 英|UK|Britain|England|London · 马来|大马|MY|Malaysia|Kuala · 德|DE|Germany|Frankfurt|Berlin · 火鸡|土耳其|TR|Turkey|Istanbul</span>
+      </span></div>
+    </div>
+  </div>
+
+  <h2>一、核心验证（这 4 项测完，主要目的就验完了）</h2>
+
+  <table>
+    <tr><th style="width:34px">#</th><th style="width:22%">测什么</th><th style="width:30%">怎么测</th><th>预期结果 / 不符预期说明什么</th></tr>
+
+    <tr>
+      <td class="num">1</td>
+      <td><b>国内 App 走直连</b><br><span class="pill p-red">最重要</span><br><span class="small">这是解决「卡」的关键</span></td>
+      <td>打开 <b>微信</b>、<b>淘宝</b>、<b>抖音</b>各刷 10 秒<br>→ 回请求记录，找 <code>weixin</code> / <code>taobao</code> / <code>douyin</code> 的请求<br>→ 看「策略」列</td>
+      <td>
+        <b>预期：显示 <code>direct</code></b> ✅<br>
+        <span class="small">（说明兜底规则 <code>final, direct</code> 生效了，国内流量不再绕道出国）</span><br><br>
+        <b>不符预期：</b><br>
+        · 显示<b>节点名</b> → 还有规则在把它往代理送，把域名发我<br>
+        · 显示 <code>reject</code> → 被广告规则误拦，也发我
+      </td>
+    </tr>
+
+    <tr style="background:#f0f7ff">
+      <td class="num">2</td>
+      <td><b>Soul 走「Soul」组</b><br><span class="pill p-blue">刻意做的例外</span></td>
+      <td>打开 <b>Soul</b> 刷一会儿<br>→ 回请求记录，搜 <code>soul</code><br>→ 看「策略」列</td>
+      <td>
+        <b>预期：显示 <code>Soul</code></b> ✅<br>
+        <span class="small">这是<b>故意的</b>，不是漏配 —— Soul 的流量走境外节点，IP 属地才会变成国外。</span><br><br>
+        <b>还要做一件事：</b>去首页把「Soul」组<b>手动锁定成一个固定节点</b>（比如固定日本），<b>不要用「自动选择」</b>。属地跟着出口 IP 走，节点在不同国家之间跳，属地也会跟着跳 —— 同一账号属地频繁跨国跳变，本身就是风控的敏感特征。<br><br>
+        <b>不符预期：</b>显示 <code>direct</code> → 有子域没被关键词覆盖 → 把那个域名发我，我补进去
+      </td>
+    </tr>
+
+    <tr>
+      <td class="num">3</td>
+      <td><b>7 个服务走代理</b></td>
+      <td>打开 <b>YouTube</b> 播个视频<br>打开 <b>X</b> 刷信息流<br>→ 回请求记录看「策略」列</td>
+      <td>
+        <b>预期：显示 <code>代理应用</code></b> ✅<br><br>
+        <b>不符预期：</b><br>
+        · 显示 <code>direct</code> → 规则集没加载。去 <b>首页 → 分流 → 远程</b>，看 X / YouTube / Telegram / Twitch / Discord / Instagram / Threads 这 7 条是否都是启用状态<br>
+        · App 本身打不开 → 去首页点「代理应用」组，手动选一个节点试试
+      </td>
+    </tr>
+
+    <tr>
+      <td class="num">4</td>
+      <td><b>交易所能用</b></td>
+      <td><b>不用改任何设置</b> —— 这个组默认就是直连<br>直接打开 <b>币安 / OKX</b>，刷新行情、进钱包页</td>
+      <td>
+        <b>预期：App 正常打开、行情能刷新</b> ✅<br>
+        请求记录里 <code>binance</code> / <code>okx</code> 显示 <code>交易所</code>（它是直连的别名）<br><br>
+        <b>不符预期：</b>App 反而打不开 → 说明 App 自带的代理没在工作。<b>去首页点「交易所」组，切到任意一个节点</b>，立刻恢复走代理，不用改文件。
+      </td>
+    </tr>
+  </table>
+
+  <h2>二、进阶验证（确认细节都对）</h2>
+
+  <table>
+    <tr><th style="width:34px">#</th><th style="width:22%">测什么</th><th style="width:30%">怎么测</th><th>预期结果 / 不符预期说明什么</th></tr>
+
+    <tr>
+      <td class="num">5</td>
+      <td><b>去广告 · 域名层</b></td>
+      <td>去 <b>首页 → 分流 → 远程</b><br>找到「广告终结者」和「规则修正」两条</td>
+      <td>
+        <b>预期：两条都在、都是启用状态，点进去能看到规则的条数</b> ✅<br>
+        <span class="small">「广告终结者」负责拦截广告域名，每天更新一次。「规则修正」必须排在它前面，负责修正误杀。</span><br><br>
+        <b>不符预期：</b>点进去是空的 / 加载失败 → 网络问题，手动下拉刷新一次
+      </td>
+    </tr>
+
+    <tr>
+      <td class="num">6</td>
+      <td><b>去广告 · 重写层</b></td>
+      <td>去 <b>首页 → 重写 → 远程</b><br>或 <b>设置 → 重写</b></td>
+      <td>
+        <b>预期：看到 9 条，没有报错标记</b> ✅<br>
+        <span class="small">应该是：哔哩广告净化Lite、墨鱼去开屏2.0、知乎净化助手、油管去广告、微博去广告、网易云净化、Google重定向、微信解锁被屏蔽的URL、BOXJS</span><br><br>
+        <b>实测方法：</b>随便开一个有开屏广告的 App（微博最容易看出来），看开屏是不是变短或消失
+      </td>
+    </tr>
+
+    <tr>
+      <td class="num">7</td>
+      <td><b>本地直连白名单</b></td>
+      <td>Safari 打开 <code>ftchinese.com</code>（FT中文网）<br>随便打开一次 <b>Zoom</b></td>
+      <td>
+        <b>预期：请求记录里显示 <code>direct</code></b> ✅<br>
+        <span class="small">这 4 个域名被「全球加速」名单误收了，写进本地白名单捞回直连：ftchinese.com / ftimg.net / bloomberg.cn / zoom.us</span><br><br>
+        <b>不符预期：</b>Zoom 直连反而打不开 → 把配置里 <code>host-suffix, zoom.us, direct</code> 那一行删掉（它是这 4 条里唯一有点不确定的）
+      </td>
+    </tr>
+
+    <tr style="background:#ecfdf5">
+      <td class="num">8</td>
+      <td><b>豆包专项</b><span class="pill p-ok">本轮修复</span></td>
+      <td><b>重新导入这次的新配置后</b>，打开豆包 App：<br>
+        · 冷启动一次（先彻底划掉后台）<br>
+        · 发一条消息、等它出完整回复<br>
+        · 再进一次「我的 → 设置」看看页面加载<br><br>
+        <span class="small">顺手看：<b>首页 → 网络活动 / 请求记录</b>，搜 <code>doubao</code></span></td>
+      <td>
+        <b>预期：启动变顺、出字更跟手。</b> ✅<br>
+        请求记录里 <code>doubao.com</code> / <code>opt.doubao.com</code> 显示 <code>direct</code>，<b>不再有</b>红色的 reject / 拦截标记。<br><br>
+        <span class="small"><b>这一项修的是什么：</b>远程「广告终结者」里有一条 <code>host-suffix,opt.doubao.com,reject</code> ——
+        唯一一条命中豆包的规则。<code>opt.*</code> 是字节的 <b>ABTest / 配置下发</b>域名，豆包启动时要请求它拿实验分组和功能开关，
+        被拦掉之后可能<b>重试 + 等超时</b> → 你觉得「卡」。</span><br><br>
+        <b>不符预期：</b>如果 <code>opt.doubao.com</code> 那行显示的还是拦截 → 新配置没生效，重新导入一次。<br>
+        <b>如果还是卡：</b>那多半是第二嫌疑 —— QUIC。见下面「第三节 · 第 4 步」。
+      </td>
+    </tr>
+  </table>
+
+  <h2>三、整体感觉「还是卡」怎么办</h2>
+  <p class="small">按这个顺序排查，三步就能定位到原因。</p>
+
+  <div class="card">
+    <label class="step"><input type="checkbox"><span><b>第 1 步 · 看请求记录</b>：打开你常用的国内 App，看它们的请求是 <code>direct</code> 还是节点名。<br>
+      <span class="small">→ 如果是<b>节点名</b>，是分流问题，把域名发我。如果是 <code>direct</code>，分流没问题，进第 2 步。</span></span></label>
+
+    <label class="step"><input type="checkbox"><span><b>第 2 步 · 把「重写」全部临时关掉再试</b>：首页 → 重写 → 远程列表，开关全关掉（不用删，随时能开回来）。<br>
+      <span class="small">→ <b>明显不卡了</b> = 就是 MitM 解密和脚本的开销。那就把 9 条里不用的再砍掉几条。<br>
+      → <b>还是卡</b>，进第 3 步。</span></span></label>
+
+    <label class="step"><input type="checkbox"><span><b>第 3 步 · 手动锁定一个节点</b>：在首页点「代理应用」组，不要用「自动选择」，手动指定一个你信得过的节点，用一段时间。<br>
+      <span class="small">→ 配置里每个测速组都是 <code>tolerance=0</code> + 每 20 分钟测速一次。<b>容差是零，意味着只要另一个节点稍微快一点，它就会切过去</b>，节点来回切会造成断流，感受就是「莫名其妙卡一下」。<br>
+      → 锁定后不卡了，就是切换抖动。解法：一直手动锁定，或者把 <code>tolerance</code> 从 0 调到 50～100（我可以帮你改）。</span></span></label>
+
+    <label class="step"><input type="checkbox"><span><b>第 4 步 · 只有豆包 / 抖音卡？试试放行 QUIC</b>（第十八轮新增）<br>
+      <span class="small">配置里有一行 <code>udp_drop_list = 443, STUN, QUIC</code>，作用是<b>丢弃 QUIC / HTTP3</b>。<br>
+      · <b>它为什么存在</b>：圈X 的重写抓不到 QUIC（加密、不走 TCP），不丢的话很多 App 会绕过去加载广告，去广告就白做了。<br>
+      · <b>它的代价</b>：字节系 App（豆包 / 抖音 / 番茄）是 QUIC 的重度用户，被丢后要回退到 TCP，首屏和弱网下会变慢。<br>
+      · <b>怎么试</b>：把那一行改成 <code>udp_drop_list = STUN</code>（只丢 STUN，放行 QUIC），重新导入配置，用一天对比。<br>
+      · <b>代价</b>：部分视频 / 网页广告会重新出现。<b>这是一道取舍题，要不要换你说了算</b> —— 想换我帮你改，改回来也就一行。</span></span></label>
+  </div>
+
+  <div class="note n-ok">
+    <b>核心四项都测完，结果怎么算正常？</b><br>
+    第 1 项是 <code>direct</code>、第 2 项是 <code>Soul</code>、第 3 项是 <code>代理应用</code>、第 4 项 App 能正常用 ——
+    <b>四个都对上了，这次改造就成功了</b>，你已经拿到了「国内直连 + 点名服务走代理 + 部分去广告」你想要的效果。<br>
+    <span class="small">第 8 项（豆包）是第十八轮补的专项，验完就知道那个 reject 是不是真的修掉了。</span>
+  </div>
+
+  <h2>四、把结果发我时，怎么发最省事</h2>
+  <div class="card">
+    <p style="margin-top:0">不用截图全部，只要这四样里对不上的：</p>
+    <ol>
+      <li><b>哪个 App</b>（或哪个网站）</li>
+      <li><b>它现在的表现</b>（打不开 / 很慢 / 属地没变 / 还有广告）</li>
+      <li><b>请求记录里的域名</b>（比如 <code>api-h5.soulapp.cn</code>）</li>
+      <li><b>那一行显示的策略</b>（<code>direct</code> / 节点名 / <code>Soul</code> / <code>代理应用</code>）</li>
+    </ol>
+    <p style="margin-bottom:0" class="small">有这四条，我就能直接定位是规则没覆盖、被别的规则抢先、还是节点本身的问题 —— 不用再来回猜。</p>
+  </div>
+
+  <p class="small" style="margin-top:36px">配套文件：<b>QuantumultX_定制版.conf</b>（当前配置）· <b>圈X规则总清单.html</b>（每一条规则是什么、能不能删）</p>
+
+</div>
+</body>
+</html>

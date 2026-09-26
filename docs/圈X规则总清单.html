@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圈X 现有规则总清单</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --ink:#1c1f23; --ink2:#5b6470;
+    --line:#e4e7ec; --accent:#2f6fed; --accent-soft:#eef3ff;
+    --ok:#0f8a52; --ok-soft:#eaf7f0; --warn:#b8860b; --warn-soft:#fdf6e3;
+    --danger:#c0392b; --danger-soft:#fdeceb; --gray-soft:#eef0f4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:32px 20px 64px;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       line-height:1.75;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto}
+  h1{font-size:26px;margin:0 0 6px;letter-spacing:-.3px}
+  .sub{color:var(--ink2);font-size:14px;margin:0 0 28px}
+  h2{font-size:19px;margin:40px 0 14px;padding-left:12px;border-left:4px solid var(--accent)}
+  h3{font-size:15px;margin:22px 0 8px;color:var(--ink)}
+  p{margin:10px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:14px 0}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card);
+        border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:12px 0}
+  th{background:#f0f2f6;text-align:left;padding:9px 11px;font-weight:600;font-size:12.5px;color:var(--ink2)}
+  td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:top}
+  td.num{color:var(--ink2);font-variant-numeric:tabular-nums;width:34px}
+  code{background:var(--gray-soft);padding:1px 5px;border-radius:4px;font-size:12.5px;
+       font-family:ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
+  pre{background:#f2f4f8;border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow-x:auto;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12.5px;line-height:1.6;margin:10px 0}
+  .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:11.5px;font-weight:600;white-space:nowrap}
+  .p-blue{background:var(--accent-soft);color:var(--accent)}
+  .p-ok{background:var(--ok-soft);color:var(--ok)}
+  .p-warn{background:var(--warn-soft);color:var(--warn)}
+  .p-red{background:var(--danger-soft);color:var(--danger)}
+  .p-gray{background:var(--gray-soft);color:var(--ink2)}
+  .note{border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px}
+  .n-warn{background:var(--warn-soft);border:1px solid #f0e3b8}
+  .n-danger{background:var(--danger-soft);border:1px solid #f5cdc9}
+  .n-ok{background:var(--ok-soft);border:1px solid #c9e9d7}
+  .n-info{background:var(--accent-soft);border:1px solid #d3e0fb}
+  ol,ul{padding-left:22px;margin:10px 0}
+  li{margin:6px 0}
+  .small{font-size:12.5px;color:var(--ink2)}
+  .tier{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0;margin:16px 0;overflow:hidden}
+  .tier-head{padding:12px 18px;font-weight:700;font-size:15px;border-bottom:1px solid var(--line);background:#fafbfc}
+  .tier-body{padding:14px 18px}
+  .bf{color:var(--ink2);font-weight:400;font-size:13px}
+  .strike{color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>圈X 现有规则总清单</h1>
+  <p class="sub">墨鱼自用 QX 配置 2.0 (V271) + 我的定制 · 2026-09-26 · 供你逐条取舍</p>
+
+  <div class="note n-info">
+    <b>怎么用这份清单：</b>每一行都是一条真实存在的规则，右边一列是我给的「能不能删」的判断。<br>
+    <b>你不需要自己动手改文件</b>——看完把想删的编号发我，我出精简版给你导入。<br>
+    想自己删也行，第 <b>七</b> 节写了动手时要注意的 3 件事。
+  </div>
+
+  <h2>〇、总量总览</h2>
+  <table>
+    <tr><th style="width:52%">分区</th><th style="width:20%">数量</th><th>说明</th></tr>
+    <tr><td><code>[filter_remote]</code> 远程分流规则集</td><td><b>14 套</b><br><span class="small" style="text-decoration:line-through">原 19 套</span></td><td>已删掉 5 套</td></tr>
+    <tr><td><code>[filter_local]</code> 本地分流规则</td><td><b>58 行</b><br><span class="small" style="text-decoration:line-through">原 13 行</span></td><td>+2 Soul、+4 直连白名单、+13 交易所、<b>+26 国产 AI / 字节系</b>；另 6 行是内网 IP，删不得</td></tr>
+    <tr><td><code>[rewrite_remote]</code> 重写（去广告主体）</td><td><b>9 条</b><br><span class="small" style="text-decoration:line-through">原 18 条</span></td><td>已按你的要求删掉 9 条</td></tr>
+    <tr><td><code>[policy]</code> 策略组</td><td><b>16 个</b></td><td>删 3 空转 + 增 3 地区 + 删「苹果服务」+ 增「Soul」+ 增「交易所」+ 增 德 / 火鸡 2 个地区</td></tr>
+    <tr><td><code>[task_local]</code> 定时/手动任务</td><td><b>2 个</b></td><td>不影响性能</td></tr>
+    <tr><td><code>[server_remote]</code> 节点订阅</td><td><b>0 条</b><br><span class="small" style="text-decoration:line-through">原 1 条</span></td><td>已删（你自己有节点）</td></tr>
+    <tr><td>其他（DNS / MitM / General）</td><td>—</td><td>见第五节</td></tr>
+  </table>
+
+  <h2>一、分流规则 · 远程规则集（14 套）</h2>
+  <p class="small">执行顺序 = 表格从上到下。<b>圈X 命中第一条就停</b>，所以顺序即优先级，顺序不能随便调。</p>
+
+  <div class="note n-ok">
+    <b>本区已精简：19 套 → 14 套。</b>共删掉 5 套：<br>
+    第三轮删 <b>Google Voice、Spotify 音乐、国际媒体、哔哩哔哩</b>（4 套）；<br>
+    第十轮删 <b>国内网站</b>（ASN.China.list，第一档纯收益项）。<br>
+    <span class="small">连带影响另见本节末尾的提示框。</span>
+  </div>
+
+  <table>
+    <tr><th class="num">#</th><th style="width:20%">名称（tag）</th><th style="width:14%">出口</th><th style="width:30%">管什么</th><th>能不能删</th></tr>
+
+    <tr><td class="num">1</td><td><b>规则修正</b></td><td><span class="pill p-ok">direct</span></td><td>修广告规则误杀的域名（白名单放行）</td><td><span class="pill p-ok">必须留</span><br><span class="small">且必须排在「广告终结者」<b>前面</b></span></td></tr>
+
+    <tr><td class="num">2</td><td><b>广告终结者</b></td><td><span class="pill p-red">reject</span></td><td>域名级拦截广告（每天更新）</td><td><span class="pill p-ok">必须留</span><br><span class="small">这是你「去广告」的第一层</span></td></tr>
+
+    <tr><td class="num">3</td><td><b>X</b></td><td><span class="pill p-blue">代理应用</span></td><td>Twitter / x.com / t.co / twimg</td><td><span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">4</td><td><b>Telegram</b></td><td><span class="pill p-blue">代理应用</span></td><td>含 6 段 IP + 5 个 ASN，<b>不能只靠域名</b></td><td><span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">5</td><td><b>YouTube</b></td><td><span class="pill p-blue">代理应用</span></td><td>196 条，域名 + UA 双匹配</td><td><span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">6</td><td><b>Twitch</b></td><td><span class="pill p-blue">代理应用</span></td><td>含 11 段 IP</td><td><span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">7</td><td><b>Discord</b></td><td><span class="pill p-blue">代理应用</span></td><td>29 条，纯域名</td><td><span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">8</td><td><b>Instagram</b></td><td><span class="pill p-blue">代理应用</span></td><td>4 条，含 1 条关键词覆盖 CDN</td><td><span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">9</td><td><b>Threads</b></td><td><span class="pill p-blue">代理应用</span></td><td>官方库仅 1 条，另配 2 条本地规则</td><td><span class="pill p-ok">留</span></td></tr>
+
+    <tr><td class="num">10</td><td><b>微信直连</b></td><td><span class="pill p-ok">direct</span></td><td>微信专线，改善转圈</td><td><span class="pill p-ok">留</span><br><span class="small">final 已 direct，但它能提前命中、更快</span></td></tr>
+
+    <tr><td class="num">11</td><td><b>Ai-All-In-One</b></td><td><span class="pill p-warn">美国节点</span></td><td>ChatGPT / Claude / Gemini / Copilot</td><td><span class="pill p-ok">留</span><br><span class="small">硬指美国节点，出口组不可换</span></td></tr>
+    <tr><td class="num">12</td><td><b>Github 分流</b></td><td><span class="pill p-blue">代理应用</span></td><td>GitHub 全站</td><td><span class="pill p-ok">✓ 已改</span><br><span class="small">第十一轮：出口由「美国节点」改为「代理应用」，不再钉死在美国</span></td></tr>
+    <tr><td class="num">13</td><td><b>苹果服务</b></td><td><span class="pill p-ok">direct</span></td><td>App Store / iCloud / 推送</td><td><span class="pill p-ok">✓ 已改</span><br><span class="small">第十一轮：出口由「苹果服务」组直接改为 direct，同名策略组已删</span></td></tr>
+
+    <tr><td class="num">14</td><td><b>全球加速</b></td><td><span class="pill p-blue">全球加速</span></td><td>GFW 名单：被墙的国外域名一律走代理</td><td><span class="pill p-red">别删</span><br><span class="small">Safari 能上外网、冷门外站能开，全靠它</span></td></tr>
+
+    <tr style="background:#f7f8fa"><td class="num">15</td><td><s><b>国内网站</b><br><span class="small">ASN.China.list</span></s></td><td><span class="pill p-gray">direct</span></td><td><s>按 IP-ASN 判断，把国内流量捞回直连</s></td><td><span class="pill p-ok">✓ 已删</span><br><span class="small">第十轮 · 第一档纯收益</span></td></tr>
+  </table>
+
+  <div class="note n-danger">
+    <b>删这 4 套的真实代价（我核实过，不是推测）：</b><br>
+    我把「全球加速」那份名单（ConnersHua Proxy.list）通读了一遍，它<b>只收 GFW 名单里的站点</b>（Google、GitHub、Reddit、Wikipedia、Telegram、X、ChatGPT…），
+    <b>里面没有任何 Netflix / Disney+ / HBO / Hulu / Spotify 的条目</b>。<br><br>
+    所以删掉「国际媒体」和「Spotify 音乐」之后，这几个服务<b>失去了唯一的代理出口</b>，会掉到 <code>final, direct</code> → 直连 → <b>国区打不开</b>。<br>
+    <span class="small">✓ 如果你本来就不用它们，这就是纯瘦身，没有损失。<br>
+    ✓ B 站不受影响：它是国内站，删掉的只是「番剧港澳台换区」，主站照常直连。<br>
+    ✓ 想恢复任意一个，把对应那行粘回 <code>[filter_remote]</code> 即可（原 #11/#14/#15/#16 的 URL 在上一版清单里）。</span>
+  </div>
+
+  <div class="note n-ok">
+    <b>连带产生的 3 个「空转」策略组已一并清掉：</b><s><span class="pill p-gray">声田音乐</span><span class="pill p-gray">国际媒体</span><span class="pill p-gray">哔哩哔哩</span></s><br>
+    它们原本就是给这 4 套规则集当出口的，规则集删掉后已无人引用。<b>第五轮已全部删除</b>（详见第四节）。<br>
+    <span class="small">注意：B 站的「哔哩广告净化 Lite」<b>重写</b>仍在 —— 那是 B 站，和 Spotify 无关。</span>
+  </div>
+
+  <div class="note n-ok">
+    <b>✓ 已执行（第十轮）：</b>「国内网站」原本是「国内直连」的第二道保险，需要查 GeoLite2 的 ASN 数据库。<br>
+    但你把兜底改成了 <code>final, direct</code> 之后，<b>国内流量天然就是直连的</b>，这道保险已经没有存在意义。<br>
+    <b>删掉它，少一次 IP 判断、少一个要维护的数据库依赖 —— 已从配置中移除。</b><br>
+    <span class="small">影响：无。国内直连完全由 <code>[filter_local]</code> 的 <code>final, direct</code> 兜住，不再依赖任何数据库。<br>
+    ⚠ 备注：<code>[filter_local]</code> 里的 <code>geoip, cn, direct</code> 一行<b>保留未动</b>（它现在也不参与分流，留着是日后想切回「兜底走代理」时的退路）。</span>
+  </div>
+
+  <h2>二、分流规则 · 本地 58 行</h2>
+
+  <div class="note n-ok">
+    <b>第十八轮新增 26 行：国产 AI / 字节系 · 直连白名单。</b>见下表 <b>#25–#50</b>。<br>
+    <b>起因：</b>你反馈「豆包变卡了」，并问是不是漏掉了国产 AI —— <b>是漏了</b>。<br>
+    <b>真凶：</b>远程「广告终结者」里夹着一行 <code>host-suffix, opt.doubao.com, reject</code>。<br>
+    <code>opt.*</code> 是字节的 <b>ABTest / 配置下发</b>域名，豆包启动时要请求它拿实验分组和功能开关；
+    被 reject 之后 App 可能<b>重试 + 等超时</b> → 启动和首页内容变慢。<br>
+    圈X 的匹配顺序是「本地规则 → 远程规则 → final」，<b>本地规则优先</b>，所以写下表第一行就能盖掉它。<br>
+    <span class="small">A 段 13 行 = 字节系（其中第 1 行是真正的修复，其余 12 行是「钉死」防变）；
+    B 段 13 行 = 其它国产 AI（纯保险，整段删掉也不影响功能）。</span>
+  </div>
+
+  <div class="note n-warn">
+    <b>第十三轮新增 2 行：让 Soul 走代理（改变 IP 属地）。</b>见下表 <b>#6、#7</b>。<br>
+    ⚠ 这 2 行<b>必须排在 <code>geoip, cn, direct</code> 前面</b>（配置里确实是这个顺序）——
+    geoip 是「按 IP 判断」的，而 Soul 的域名多解析到国内 CDN IP，写在它后面会先被 geoip 判成直连，
+    这条规则就永远轮不到，而且<b>不报错、静默失效</b>。
+  </div>
+
+  <div class="note n-info">
+    <b>另新增 4 行「本地直连白名单」（第十二轮）。</b>
+    这 4 个域名被远程的「全球加速」名单收了进去（原本走代理），但它们<b>国内有服务器 / CDN</b>，直连更快。<br>
+    <b>为什么写在「本地」就能覆盖「远程」？</b>圈X 的匹配顺序是
+    <code>本地规则 → 远程规则 → final</code>，<b>本地优先</b> —— 写在这里就能拦下远程名单的判断。
+  </div>
+
+  <div class="note n-info">
+    <b>第十五轮又新增 13 行：加密货币交易所 + 自带钱包 → 直连。</b>见下表 <b>#12–#24</b>。<br>
+    理由与 A 段<b>不同</b>：这些域名本来就在「全球加速」GFW 名单里（走代理），但
+    <b>币安 / OKX / Bybit / Bitget 这些 App 自带代理功能</b>，流量由 App 自己的代理处理 ——
+    圈X 再代理一层 = <b>双重代理</b>：① 更慢（绕两跳）② 出口 IP 变成节点 IP，而<b>交易所对 IP 极敏感，易触发风控</b>。<br>
+    ★ 所以这 13 行统一交给新建的「<b>交易所</b>」策略组，该组<b>默认出口 = direct</b>（圈X 不介入）。<br>
+    ⚠ <b>前提</b>：App 内置代理要正常工作。若导入后某个站反而打不开 ——
+    在圈X 首页把「交易所」组切到任意节点即可（变成走代理），或删掉对应那一行。
+  </div>
+
+  <table>
+    <tr><th class="num">#</th><th style="width:47%">规则原文</th><th>说明 / 能否删</th></tr>
+    <tr><td class="num">1</td><td><code>host, ad.12306.cn, direct</code></td><td>12306 广告域名直连（防止被误拦）<span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">2</td><td><code>host, sdkapp.uve.weibo.com, direct</code></td><td>微博 SDK 直连<span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">3</td><td><code>host-suffix, ddgksf2013.top, proxy</code></td><td>墨鱼的配置源站走代理（保证能更新）<span class="pill p-warn">可删</span><span class="small">你若固定用本地配置、不订阅他更新，可删</span></td></tr>
+    <tr><td class="num">4</td><td><code>host-suffix, threads.com, 代理应用</code></td><td>我补的 Threads 规则<span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">5</td><td><code>host-suffix, threads.net, 代理应用</code></td><td>我补的 Threads 规则<span class="pill p-ok">留</span></td></tr>
+    <tr style="background:#fff7ed"><td class="num">6</td><td><code>host-keyword, soulapp, Soul</code></td><td rowspan="2"><b>【第十三轮新增】Soul 走代理，改变 IP 属地。</b><span class="pill p-warn">新</span><br><span class="small">用「关键词」一次覆盖 api / api-h5 / im / soulapp-inc 等所有子域。<br><b>想停用</b>：在圈X 首页把「Soul」组切到 <code>direct</code>，不用改文件。</span></td></tr>
+    <tr style="background:#fff7ed"><td class="num">7</td><td><code>host-keyword, soulsmile, Soul</code></td></tr>
+    <tr><td class="num">8</td><td><code>host-suffix, ftchinese.com, direct</code></td><td rowspan="4" style="background:#f0f7ff"><b>【第十二轮新增】本地直连白名单。</b><span class="pill p-blue">新</span><br><span class="small">这批域名被「全球加速」名单误收，走代理是绕路。删掉任意一行只影响那一项。</span></td></tr>
+    <tr><td class="num">9</td><td><code>host-suffix, ftimg.net, direct</code></td></tr>
+    <tr><td class="num">10</td><td><code>host-suffix, bloomberg.cn, direct</code></td></tr>
+    <tr><td class="num">11</td><td><code>host-suffix, zoom.us, direct</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">12</td><td><code>host-suffix, binance.com, 交易所</code></td><td rowspan="13"><b>【第十五轮新增】加密货币交易所 + 自带钱包 → 直连。</b><span class="pill p-blue">新</span><br><span class="small">币安 / OKX / Bybit / Bitget 及它们的自带钱包。<br>这些 App <b>自带代理</b>，圈X 只需别插手。<br><b>想改成走代理</b>：首页把「交易所」组切到任意节点即可，不用改文件。</span></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">13</td><td><code>host-suffix, binance.info, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">14</td><td><code>host-suffix, bnbstatic.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">15</td><td><code>host-suffix, bntrace.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">16</td><td><code>host-suffix, yingwangtech.cloud, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">17</td><td><code>host-suffix, okx.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">18</td><td><code>host-suffix, bybit.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">19</td><td><code>host-suffix, bybitglobal.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">20</td><td><code>host-suffix, byabcde.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">21</td><td><code>host-suffix, bybdc6.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">22</td><td><code>host-suffix, ffbbbdc6d3c353211fe2ba39c9f744cd.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">23</td><td><code>host-suffix, bitget.com, 交易所</code></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">24</td><td><code>host-suffix, bitkeep.com, 交易所</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">25</td><td><code>host-suffix, doubao.com, direct</code></td><td rowspan="13"><b>【第十八轮新增】A 段 · 字节系 / 豆包 → 直连。</b><span class="pill p-ok">关键修复</span><br><span class="small">★ <b>第 25 行就是「豆包变卡」的修复</b>：远程「广告终结者」里有一条 <code>host-suffix,opt.doubao.com,reject</code>，<code>opt.*</code> 是字节的 ABTest / 配置下发域名 —— 被拦掉会让豆包启动时重试等待 → 变慢。<b>本地规则优先于远程规则</b>，写这一行即可盖掉它。<br>下面 12 行是「钉死」，防止将来远程规则变动把这些域名捞走 —— 加它们不改变现状（它们本来就在 final, direct 下直连），纯保险。</span></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">26</td><td><code>host-suffix, doubao.cn, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">27</td><td><code>host-suffix, volces.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">28</td><td><code>host-suffix, volccdn.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">29</td><td><code>host-suffix, bytedance.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">30</td><td><code>host-suffix, bytedanceapi.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">31</td><td><code>host-suffix, byteimg.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">32</td><td><code>host-suffix, bytednsdoc.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">33</td><td><code>host-suffix, bytescm.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">34</td><td><code>host-suffix, zijieapi.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">35</td><td><code>host-suffix, pstatp.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">36</td><td><code>host-suffix, ibytedtos.com, direct</code></td></tr>
+    <tr style="background:#ecfdf5"><td class="num">37</td><td><code>host-suffix, bytegecko.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">38</td><td><code>host-suffix, deepseek.com, direct</code></td><td rowspan="13"><b>【第十八轮新增】B 段 · 其它国产 AI → 直连。</b><span class="pill p-blue">新</span><br><span class="small">DeepSeek / Kimi / 智谱 / 通义 / 文心 / 星火 / 元宝 / 混元 / MiniMax / 阶跃。<br><b>纯保险</b>：这些域名本来就会落到 <code>final, direct</code>，加进来只是更稳（冗余但无害）。<br>哪天想瘦身，<b>整段 13 行删掉不影响任何功能</b>。</span></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">39</td><td><code>host-suffix, moonshot.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">40</td><td><code>host-suffix, zhipuai.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">41</td><td><code>host-suffix, bigmodel.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">42</td><td><code>host-suffix, dashscope.aliyuncs.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">43</td><td><code>host-suffix, tongyi.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">44</td><td><code>host-suffix, yiyan.baidu.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">45</td><td><code>host-suffix, chat.baidu.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">46</td><td><code>host-suffix, xinghuo.xfyun.cn, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">47</td><td><code>host-suffix, yuanbao.tencent.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">48</td><td><code>host-suffix, hunyuan.tencent.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">49</td><td><code>host-suffix, minimaxi.com, direct</code></td></tr>
+    <tr style="background:#f0f7ff"><td class="num">50</td><td><code>host-suffix, stepfun.com, direct</code></td></tr>
+    <tr><td class="num">51</td><td><code>ip-cidr, 10.0.0.0/8, direct</code></td><td rowspan="6" style="background:#fafbfc"><b>这 6 行是内网 / 保留地址，<span class="pill p-red">一行都不能删</span>。</b><br><span class="small">删了会导致局域网设备、投屏、路由器后台访问异常。<br>其中 182.254.116.0/24 是腾讯的一个诊断地址，也建议留着。</span></td></tr>
+    <tr><td class="num">52</td><td><code>ip-cidr, 127.0.0.0/8, direct</code></td></tr>
+    <tr><td class="num">53</td><td><code>ip-cidr, 172.16.0.0/12, direct</code></td></tr>
+    <tr><td class="num">54</td><td><code>ip-cidr, 192.168.0.0/16, direct</code></td></tr>
+    <tr><td class="num">55</td><td><code>ip-cidr, 224.0.0.0/24, direct</code></td></tr>
+    <tr><td class="num">56</td><td><code>ip-cidr, 182.254.116.0/24, direct</code></td></tr>
+    <tr style="background:#fff7ed"><td class="num">57</td><td><code>geoip, cn, direct</code></td><td>按 GeoIP 数据库判断国内 IP 直连<span class="pill p-warn">可删（但建议留）</span><br><span class="small">final 已 direct，它不再是必需品。<b>注意：Soul 那两行必须排在它前面</b>（配置里已如此）。</span></td></tr>
+    <tr><td class="num">58</td><td><code>final, direct</code></td><td><b>兜底规则，整套配置的最后一关。</b><span class="pill p-ok">必须留</span><br><span class="small">这是「国内不卡」的根基：所有规则都没命中 → 直连</span></td></tr>
+  </table>
+
+  <div class="note n-warn">
+    <b>一个反直觉、但很重要的结论：国内 App 不需要为它们写规则。</b><br>
+    银行、社交、金融、股票基金这类国产 App（工行 / 招行 / 支付宝 / 微信 / 东方财富 / 同花顺 …），
+    它们的域名<b>本来就不在「全球加速」名单里</b> —— 那份名单是「被墙域名清单」，只收 Google、GitHub、X、YouTube 这类。<br>
+    所以国产 App 的请求会<b>天然掉到最后那行 <code>final, direct</code></b> → 直接直连，第一关就定死。<br>
+    <b>给它们额外写规则 = 空转，不产生任何效果，只增加规则数量。</b>
+  </div>
+
+  <div class="note n-danger">
+    <b>⚠ 但这个结论有一个「但书」—— 豆包就是这么中招的（第十八轮）。</b><br>
+    「不用写规则」成立的前提是<b>没有任何其它规则会命中它</b>。而远程「广告终结者」（Cats-Team/AdRules）
+    里夹着一条 <code>host-suffix, opt.doubao.com, reject</code> —— 唯一一条命中豆包的规则。<br>
+    <code>opt.*</code> 是字节的 <b>ABTest / 配置下发</b>域名，豆包启动时要请求它拿实验分组和功能开关，
+    被 reject 之后可能<b>重试 + 等超时</b> → 启动和首页内容变慢。<br>
+    <span class="small">所以「要不要给某个 App 写规则」的正确问法不是「它是不是国产的」，
+    而是<b>「有没有哪条规则会命中它」</b>。远程规则集是别人维护的、会变，
+    这就是第十八轮要给字节系「钉死」直连的原因。</span>
+  </div>
+
+  <h3>怎么判断一个服务该不该动</h3>
+  <table>
+    <tr><th style="width:30%">情况</th><th style="width:30%">举例</th><th>该怎么办</th></tr>
+    <tr>
+      <td><b>国内 App 的域名</b><br><span class="small">不在「全球加速」名单里</span></td>
+      <td>工行、招行、支付宝、微信、东方财富、同花顺、携程、美团</td>
+      <td><span class="pill p-ok">什么都不用做</span><br><span class="small">自动走 final, direct → 直连</span></td>
+    </tr>
+    <tr>
+      <td><b>国内可直连、却被名单误收</b><br><span class="small">这才是真正需要动手的</span></td>
+      <td>FT 中文网、彭博中文、Zoom</td>
+      <td><span class="pill p-blue">写进本地直连白名单</span><br><span class="small">在 <code>[filter_local]</code> 加一行<br><code>host-suffix, 域名, direct</code></span></td>
+    </tr>
+    <tr>
+      <td><b>真正被墙的服务</b></td>
+      <td>Google、GitHub、X、YouTube、ChatGPT、Wikipedia</td>
+      <td><span class="pill p-red">千万别往白名单里放</span><br><span class="small">放了就直接打不开</span></td>
+    </tr>
+    <tr style="background:#fdf2f8">
+      <td><b>被墙、【但 App 自带代理】</b><br><span class="small">第十五轮的情况</span></td>
+      <td>币安、OKX、Bybit、Bitget 及它们的自带钱包</td>
+      <td><span class="pill p-blue">交给「交易所」组（默认 direct）</span><br><span class="small">这些 App 自己会走代理，圈X<b>再代理一层就是双重代理</b>（更慢 + 出口 IP 变节点 IP）。<br>前提：App 内置代理要正常；否则首页把该组切到任意节点。</span></td>
+    </tr>
+    <tr>
+      <td><b>被墙、但不在「全球加速」名单里的冷门站</b></td>
+      <td>小众国外论坛 / 工具站</td>
+      <td><span class="pill p-blue">加进「代理应用」组</span><br><span class="small">在 <code>[filter_local]</code> 加一行<br><code>host-suffix, 域名, 代理应用</code></span></td>
+    </tr>
+  </table>
+
+  <div class="note n-info">
+    <b>关于「多邻国（Duolingo）」这类国内有服务器的境外 App ——</b><br>
+    判断方法就一句话：<b>看它的域名在不在「全球加速」名单里。</b><br>
+    · 在名单里 → 走代理 → 需要像 FT 中文网那样，写一行本地规则捞回直连<br>
+    · 不在名单里 → 自动掉到 <code>final, direct</code> → 已经是直连，什么都不用做<br>
+    <span class="small">Duolingo（duolingo.com）我逐行核对过「全球加速」全文，<b>不在名单里</b> —— 所以它现在就是直连的，不需要任何改动。</span>
+  </div>
+
+  <div class="note n-warn">
+    <b>Soul（灵魂社交）是个「反向」的例外 —— 它被特意安排走代理了（第十三轮）。</b><br>
+    上面那段说「国内 App 什么都不用做」，Soul 正好相反：<b>主动让它走代理</b>，
+    为的是改变它的 <b>IP 属地显示</b>（让属地显示成节点所在国家，而不是你真实所在的省份）。<br>
+    · <b>做法</b>：新增「Soul」策略组 + 2 条本地规则（见上表 #6、#7）<br>
+    · <b>原理</b>：Soul 的属地由<b>出口 IP</b> 判定 → 让流量走境外节点，属地就显示成那个国家<br>
+    · <b>代价（务必知道）</b>：国内 App + 境外 IP 属于<b>风控敏感特征</b>，可能触发验证码 / 限流 / 封号；
+      机场节点为多人共用，容易被平台判定为异常 IP<br>
+    · <b>想停用</b>：在圈X 首页把「Soul」组切到 <code>direct</code> 即可，不必改文件<br>
+    <span class="small">也就是说，Soul 是「国内 App 不用写规则」这个结论的例外之一 ——
+    另一个是第十八轮的豆包（它是被远程规则<b>误伤</b>，性质不同：Soul 是主动走代理，豆包是被迫钉死直连）。</span>
+  </div>
+
+  <h2>三、重写（9 条）</h2>
+  <div class="note n-ok">
+    <b>本区已精简：18 条 → 9 条。</b>前后共删掉 9 条 ——<br>
+    ① 第四轮删 8 条：<b>Safari 超级搜索、Spotify 音乐 VIP、彩云天气净化、高德地图净化、闲鱼净化、小红书净化+去水印、百度网盘净化、百度网盘倍速</b>；<br>
+    ② 第十六轮删 1 条：<b>豆瓣网页观影快捷跳转</b>（属「网页优化」，不是去广告）。<br>
+    <span class="small">删重写是零风险的：MitM 主机名由重写自动合并，圈X 会自动回收，不会留下任何残留配置。<br>
+    本轮删的那条已在配置里保留为注释行，去掉行首「# 」即可恢复。</span>
+  </div>
+
+  <h3>A. 全 App 通用（建议留）</h3>
+  <table>
+    <tr><th class="num">#</th><th style="width:34%">名称（tag）</th><th style="width:14%">分类</th><th>作用 / 能否删</th></tr>
+    <tr><td class="num">1</td><td><b>墨鱼去开屏 2.0</b></td><td>广告净化</td><td>去所有 App 的开屏广告，<b>通用性最强的一条</b><span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">2</td><td><b>Google 重定向</b></td><td>网页优化</td><td>去掉 Google 搜索结果跳转链接<span class="pill p-ok">留</span></td></tr>
+    <tr><td class="num">3</td><td><b>微信解锁被屏蔽的 URL</b></td><td>功能增强</td><td>微信内可直接打开外链<span class="pill p-ok">留</span></td></tr>
+  </table>
+
+  <h3>B. 单 App 专用（不用就删）</h3>
+  <table>
+    <tr><th class="num">#</th><th style="width:34%">名称（tag）</th><th style="width:14%">分类</th><th>作用 / 能否删</th></tr>
+    <tr><td class="num">4</td><td><b>哔哩广告净化 Lite</b></td><td>会员解锁</td><td>B 站去广告 + 1080P 高码率<span class="pill p-warn">看 B 站就留</span></td></tr>
+    <tr><td class="num">5</td><td><b>油管去广告</b></td><td>广告净化</td><td>YouTube App 去广告<span class="pill p-ok">看 YouTube 就留</span></td></tr>
+    <tr><td class="num">6</td><td><b>知乎净化助手</b></td><td>广告净化</td><td>知乎去广告<span class="pill p-warn">不用可删</span></td></tr>
+    <tr><td class="num">7</td><td><b>微博去广告</b></td><td>广告净化</td><td>微博去广告<span class="pill p-warn">不用可删</span></td></tr>
+    <tr><td class="num">8</td><td><b>网易云净化</b></td><td>广告净化</td><td>网易云音乐去广告<span class="pill p-warn">不用可删</span></td></tr>
+    <tr><td class="num">9</td><td><b>BOXJS</b></td><td>功能增强</td><td>脚本运行环境（跑签到类脚本用的）<span class="pill p-warn">不跑脚本就删</span></td></tr>
+  </table>
+
+  <div class="note n-ok">
+    <span class="pill p-ok">第十六轮已删</span> <s>豆瓣网页观影快捷跳转</s>
+    <span class="small">—— 作用是在豆瓣电影页加一个播放入口，属于「网页优化」而非去广告。删掉不影响任何去广告功能。原行已保留为注释行，想恢复去掉行首「# 」即可。</span>
+  </div>
+
+  <div class="note n-info">
+    <b>已删的 9 条，影响都很轻：</b>
+    高德 / 闲鱼那两条本来就需要「卸载重装 App」才生效，多数人没做 → 一直是废的；
+    其余 7 条是单 App 净化或网页优化，删掉只是那些 App 恢复原来的广告 / 少一个便捷入口。
+    <br><span class="small">顺带说明：<b>Safari 超级搜索</b>、<b>豆瓣网页观影快捷跳转</b>和 <b>Google 重定向</b>都不是「去广告」而是「网页优化」——你删了前两个、留了 Google 重定向。</span>
+  </div>
+
+  <h2>四、策略组（16 个）</h2>
+  <div class="note n-ok">
+    <b>本区经历了四次变动：</b><br>
+    ① <b>删 3 个：</b>哔哩哔哩、声田音乐、国际媒体 —— 它们对应的规则集已删除，组已无人引用，属于纯占位（13 → 10）。<br>
+    ② <b>增 3 个：</b>韩国节点、英国节点、大马节点 —— 你要的地区节点组，同时已挂进手动组的成员列表（10 → 13）。<br>
+    ③ <b>删 1 个：</b>苹果服务 —— 它的规则集出口已直接改成 <code>direct</code>（见第一节 #13），组彻底没人引用，纯冗余（13 → 12）。<br>
+    ④ <b>增 1 个：</b><b>Soul</b> —— 第十三轮新增，专供 Soul 走代理改 IP 属地（12 → 13）。<br>
+     ⑤ <b>增 1 个：</b><b>交易所</b> —— 第十五轮新增，币安 / OKX / Bybit / Bitget 及自带钱包走它，<b>默认出口 direct</b>（13 → 14）。<br>
+     ⑥ <b>增 2 个：</b><b>德国节点</b>、<b>火鸡节点</b>（土耳其）—— 第十七轮新增，同时已挂进上面 5 个手动组的成员列表（14 → <b>16</b>）。<br>
+     <span class="small">至此配置里已不存在任何 Spotify / 声田 相关条目。</span>
+  </div>
+
+  <h3>手动组（static）5 个</h3>
+  <table>
+    <tr><th class="num">#</th><th style="width:20%">组名</th><th style="width:36%">成员顺序（第一个是默认）</th><th>能否删</th></tr>
+    <tr style="background:#f7f8fa"><td class="num">—</td><td><s><b>苹果服务</b></s></td><td><s>direct → 港 → 台 → 美 → 日 → 新 → 韩 → 英 → 马 → proxy</s></td><td><span class="pill p-ok">✓ 已删</span><br><span class="small">第十一轮：规则集出口已直接写死 <code>direct</code>，本组纯冗余</span></td></tr>
+    <tr><td class="num">1</td><td><b>全球加速</b></td><td>自动选择 → direct → 港 → 台 → 日 → 新 → 美 → <span class="small">韩 → 英 → 马 → 德 → 火鸡</span> → proxy</td><td><span class="pill p-red">必须留</span></td></tr>
+    <tr><td class="num">2</td><td><b>代理应用</b> <span class="small">（你点名的服务走这个）</span></td><td>自动选择 → direct → 美 → 港 → 日 → 新 → 台 → <span class="small">韩 → 英 → 马 → 德 → 火鸡</span> → proxy</td><td><span class="pill p-ok">核心组，留</span></td></tr>
+    <tr><td class="num">3</td><td><b>兜底分流</b></td><td>direct → 自动选择 → 全球加速 → 港 → 台 → 日 → 新 → 美 → <span class="small">韩 → 英 → 马 → 德 → 火鸡</span> → proxy</td><td><span class="pill p-warn">可删</span><span class="small">final 已改成 direct，这组现在不参与分流。<br>留着是为了日后想切回「兜底走代理」</span></td></tr>
+    <tr style="background:#fff7ed"><td class="num">4</td><td><b>Soul</b> <span class="small">（新，第十三轮）</span></td><td>自动选择 → 日 → 美 → 港 → 新 → 韩 → 英 → 马 → 德 → 火鸡 → 台 → <code>direct</code> → proxy</td><td><span class="pill p-warn">按需</span><span class="small">专供 Soul 走代理、改 IP 属地。<br><b>导入后建议手动锁定一个固定节点</b> —— 属地跟着出口走，节点跳属地也跳</span></td></tr>
+    <tr style="background:#fdf2f8"><td class="num">5</td><td><b>交易所</b> <span class="small">（新，第十五轮）</span></td><td><code>direct</code> → 港 → 日 → 美 → 新 → 韩 → 英 → 马 → 德 → 火鸡 → 台 → proxy</td><td><span class="pill p-ok">核心组，留</span><span class="small">币安 / OKX / Bybit / Bitget 及自带钱包走它。<br><b>默认 direct = 圈X 不介入</b>（这些 App 自带代理）。<br>想改成走代理 → 首页切到任意节点</span></td></tr>
+  </table>
+
+  <h3>测速组（url-latency-benchmark）11 个</h3>
+  <table>
+    <tr><th class="num">#</th><th style="width:20%">组名</th><th style="width:36%">匹配什么节点</th><th>能否删</th></tr>
+    <tr><td class="num">6</td><td><b>自动选择</b></td><td>全部节点（排除含「网易/墨鱼」的）</td><td><span class="pill p-ok">留，主力</span></td></tr>
+    <tr><td class="num">7</td><td><b>香港节点</b></td><td>节点名含 港 / HK / Hong</td><td rowspan="10" style="background:#fafbfc"><span class="pill p-warn">按需</span><br><span class="small">每个组都 <b>1200 秒测速一次 + tolerance=0</b>。<br>「各地节点」组越多，后台测速越频繁、越耗电。<br><b>如果你有自己的固定节点，这些地区组基本用不上</b>，可只留常用的 1–2 个。</span></td></tr>
+    <tr><td class="num">8</td><td><b>台湾节点</b></td><td>含 台 / TW / Taiwan</td></tr>
+    <tr><td class="num">9</td><td><b>日本节点</b></td><td>含 日 / JP / Japan</td></tr>
+    <tr><td class="num">10</td><td><b>狮城节点</b></td><td>含 新 / 狮 / SG / Singapore</td></tr>
+    <tr><td class="num">11</td><td><b>美国节点</b></td><td>含 美 / US / States / American</td></tr>
+    <tr style="background:#f0f7ff"><td class="num">12</td><td><b>韩国节点</b> <span class="small">（新）</span></td><td>含 韩 / KR / Korea / Seoul</td></tr>
+    <tr style="background:#f0f7ff"><td class="num">13</td><td><b>英国节点</b> <span class="small">（新）</span></td><td>含 英 / UK / Britain / England / London</td></tr>
+    <tr style="background:#f0f7ff"><td class="num">14</td><td><b>大马节点</b> <span class="small">（新）</span></td><td>含 马来 / 馬來 / 大马 / 大馬 / MY / Malaysia / Kuala</td></tr>
+    <tr style="background:#f0f7ff"><td class="num">15</td><td><b>德国节点</b> <span class="small">（新，第十七轮）</span></td><td>含 德 / DE / Germany / Frankfurt / Berlin</td></tr>
+    <tr style="background:#f0f7ff"><td class="num">16</td><td><b>火鸡节点</b> <span class="small">（新，第十七轮）</span></td><td>含 火鸡 / 土耳其 / TR / Turkey / Istanbul<br><span class="small">⚠ 大写的 <code>TR</code> 也会匹配到名字里带 <code>TROJAN / TRIAL</code> 的节点 —— 只会多一个可见成员，不影响分流</span></td></tr>
+  </table>
+
+  <div class="note n-info">
+    <b>新增的 5 个组（韩 / 英 / 马 / 德 / 火鸡）是「宽松匹配」，故意没写排除段。</b><br>
+    原作者给港/台/日/新/美写的那种排除写法 <code>^((?!(...)).)*$</code> 是黑名单式的，误伤是静默的 ——
+    例如照抄它，一条名为「新加坡-亚马逊专线」的节点会因名字含「马」而被踢出「狮城节点」组，你只会发现节点莫名消失、不会有任何报错。<br>
+     所以新组宁可让一个节点同时出现在两个组里（<b>可见、能自行分辨</b>），也不静默丢节点。现有 5 个组的排除列表也<b>没有</b>加「英 / 马 / 德 / 火鸡」，同理。
+   </div>
+
+   <div class="note n-ok">
+     <b>第十七轮：把「大马节点」的图标从长方形换成了方版。</b><br>
+     这不是「看着不太一样」，是<b>量出来的硬差异</b> ——<br>
+     · 港 / 台 / 日 / 新 / 美 / 韩 / 英 / 德 / 火鸡（Orz-3 那套）：108×108 画布，<b>可见区域 106×106，满幅正方形</b><br>
+     · 大马原来那版（Koolson/Qure）：144×144 画布，<b>可见区域只有 142×102，横长方形</b><br>
+     圈X 的图标格是正方形的，按比例放进去：其它图标占到 98% 高，大马只有 71% 高 ——
+     所以它看着「小一号、扁一条」。<br>
+     <b>为什么不用 Orz-3 的现成图标？</b>那套 300+ 个图标里<b>根本没有马来西亚</b>（已逐项核过它的
+     Color / Alpha 目录、三个索引 JSON、以及全部 40 多个 fork）。马来西亚国旗是 2:1 又带左上蓝底徽记，
+     原作者大概直接跳过了 —— 所以这一枚是按 Orz-3 的规格重画的，存在你的 WorkBuddy 图床里取公网直链。
+   </div>
+
+  <div class="note n-danger">
+    <b>注意组之间的引用关系：</b>删一个策略组之前，必须先把<b>所有引用它的地方</b>改掉，否则那几条规则会静默失效。<br>
+    比如删「美国节点」组，就要先处理：Ai-All-In-One 规则集，以及「全球加速 / 代理应用 / 兜底分流」这些组里的成员引用。<br>
+    <span class="small">（注：「Github 分流」原来也引用「美国节点」，第十一轮已改出口为「代理应用」，所以不再受影响。）</span><br>
+    <b>这就是我建议让我来改、而不是你自己删的原因</b> —— 漏一处就是一个不易察觉的故障。<br>
+    <span class="small">（反过来说：上面这三个组能安全删掉，正是因为我先核实过它们没有被任何地方引用。）</span>
+  </div>
+
+  <h2>五、其他分区</h2>
+
+  <h3>节点订阅 <code>[server_remote]</code> — 0 条 <span class="small">（原 1 条，已删）</span></h3>
+  <table>
+    <tr><th class="num">#</th><th style="width:30%">名称</th><th>说明</th></tr>
+    <tr style="background:#f7f8fa"><td class="num">1</td><td><s><b>🐟临时使用</b><br><span class="small">Ruk1ng001/freeSub</span></s></td><td><span class="pill p-ok">✓ 已删</span> <span class="small">（第十轮 · 第一档纯收益）</span><br>公开免费节点池，每小时刷新一次，作者自己标注「仅供临时使用」。<br><b>你自己有节点 → 删除纯收益</b>，少一次每小时的后台拉取。<br><span class="small">影响：删掉后「自动选择」等组的节点只来自你自己加的订阅。<br>想恢复：把那行去掉行首「# 」粘回 <code>[server_remote]</code> 即可（配置里已注释保留）。</span></td></tr>
+  </table>
+
+  <h3>定时任务 <code>[task_local]</code> — 2 个</h3>
+  <table>
+    <tr><th class="num">#</th><th style="width:30%">名称</th><th>说明</th></tr>
+    <tr><td class="num">1</td><td><b>流媒体解锁查询</b></td><td>手动点一下才跑，不占后台资源<span class="pill p-warn">不用可删</span></td></tr>
+    <tr><td class="num">2</td><td><b>节点纯净度详情</b></td><td>查节点 IP 纯净度，注册外网账号时参考<span class="pill p-warn">不用可删</span></td></tr>
+  </table>
+
+  <h3>DNS <code>[dns]</code></h3>
+  <pre>no-ipv6          ← 关闭 IPv6
+no-system        ← 不使用系统 DNS
+server=223.5.5.5 / 119.29.29.29 / 114.114.114.114
+server=/*.icloud.com/119.29.29.29
+server=/*.icloud.com.cn/119.29.29.29
+server=/*.tencent.com/119.29.29.29
+server=/*.weixin.com/119.29.29.29</pre>
+  <p class="small">这套 DNS 是作者调过的，全走国内解析器。<b>不建议动</b>。<span class="pill p-red">别删</span></p>
+
+  <h3>MitM <code>[mitm]</code></h3>
+  <pre>skip_validating_cert = true
+force_sni_domain_name = false
+hostname = -testflight.apple.com, -*.fcbox.com, -*huami.com, -*amemv.com, -*snssdk.com, -www.google.com</pre>
+  <p class="small">带减号的是<b>排除项</b>（不解密这些域名）。真正要解密的主机名由你自己的重写自动带进来合并。<br>
+  <b>你删掉重写，这里会自动变短，不用手动清理。</b><span class="pill p-ok">不用动</span></p>
+
+  <h3>General <code>[general]</code> 里值得知道的 3 项</h3>
+  <table>
+    <tr><th style="width:32%">配置项</th><th>说明</th></tr>
+    <tr><td><code>excluded_routes=…</code></td><td>游戏 / 语音流量的 IP 段，不经过圈X 处理<span class="pill p-ok">留</span></td></tr>
+    <tr><td><code>dns_exclusion_list=…</code></td><td>广电、平安等 App 的域名不走圈X DNS<span class="pill p-ok">留</span></td></tr>
+    <tr><td><code>udp_drop_list = 443, STUN, QUIC</code></td><td><b>丢 UDP 443 / QUIC 包。</b><span class="pill p-warn">可试关</span><br><span class="small">作者加它是为了让油管 / 小红书去广告生效 —— 圈X 的 URL 重写抓不到 QUIC（加密、不走 TCP），不丢 QUIC 的话很多 App 会偷偷用 HTTP/3 加载广告。<br>
+    <b>代价：字节系 App（豆包 / 抖音 / 番茄）是 QUIC 重度用户，被丢后要回退 TCP，首屏和弱网可能变慢。这是「豆包变卡」的第二嫌疑（第十八轮）。</b><br>
+    想优先保证豆包 / 抖音流畅 → 把这行改成 <code>udp_drop_list = STUN</code>（放行 QUIC，代价是部分广告去不掉）。改完要重新导入配置。</span></td></tr>
+  </table>
+
+  <h2>六、我建议的精简顺序</h2>
+  <p class="small">从「最安全、纯收益」排到「需要判断、有代价」。供你挑。</p>
+
+  <div class="tier">
+    <div class="tier-head">第一档 · 纯收益，删了只有好处 <span class="bf">✓ 全部完成</span></div>
+    <div class="tier-body">
+      <ul>
+        <li><span class="pill p-ok">已完成</span> <s>删「国内网站」规则集</s>（第一节 #15）<span class="small"> — 第十轮已删；final 已 direct，它已多余，还省掉一个 GeoLite2 ASN 数据库依赖</span></li>
+        <li><span class="pill p-ok">已完成</span> <s>删「🐟临时使用」节点订阅</s>（第五节）<span class="small"> — 第十轮已删（配置里保留为注释行）；少一次每小时的后台拉取</span></li>
+        <li><span class="pill p-ok">已完成</span> <s>删「高德地图净化」「闲鱼净化」两条重写</s><span class="small"> — 你确认删了，这两条本来就需要卸载重装才生效</span></li>
+        <li><span class="pill p-ok">已完成</span> <s>删不用的单 App 重写</s><span class="small"> — 第四轮共删 8 条（18 → 10）；第十六轮再删 1 条「豆瓣网页观影快捷跳转」（10 → 9）</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-head">第二档 · 结构精简，把重复的组收掉 <span class="bf">2 / 4 已完成</span></div>
+    <div class="tier-body">
+      <ul>
+        <li><span class="pill p-ok">已完成</span> <s>「Github 分流」出口从「美国节点」改为「代理应用」</s><span class="small"> — 第十一轮已改；不再钉死在美国，跟着「代理应用」组走</span></li>
+        <li><span class="pill p-ok">已完成</span> <s>「苹果服务」规则集出口改为 <code>direct</code>，删掉同名的策略组</s><span class="small"> — 第十一轮已改；策略组由 13 减为 12</span></li>
+        <li><span class="pill p-gray">待办</span> <b>删「兜底分流」策略组</b><span class="small">— final 已改 direct，这组当前不参与分流。但留着是「日后想切回代理模式」的开关，删了就没这个退路</span></li>
+        <li><span class="pill p-gray">待办</span> <b>地区测速组只留你真正要用的</b><span class="small">— 现在有 港/台/日/新/美/韩/英/马/德/火鸡 共 10 个地区组，各自 20 分钟测速一次，有点耗电。不用的可以直接删行（这些组之间互不引用）</span></li>
+        <li><b>注意：地区组不用时删掉是零风险的</b><span class="small">— 但如果删的是一个<b>被手动组引用的</b>组（比如删「韩国节点」），要先把引用它的那些手动组的成员列表里的「韩国节点」一起去掉，否则那是个悬空引用</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-head">第三档 · 按你的实际使用删 <span class="bf">先确认是真不用</span></div>
+    <div class="tier-body">
+      <ul>
+        <li><span class="pill p-ok">已完成</span> <s>不用 Google Voice → 删「Google Voice」规则集</s></li>
+        <li><span class="pill p-ok">已完成</span> <s>不听 Spotify → 删「Spotify 音乐」规则集 + 「Spotify 音乐 VIP」重写 + 「声田音乐」策略组</s><br>
+          <span class="small">↳ Spotify / 声田 已从配置中彻底清除，无残留</span></li>
+        <li><span class="pill p-ok">已完成</span> <s>不看 Netflix/Disney+ → 删「国际媒体」规则集 + 策略组</s></li>
+        <li><span class="pill p-ok">已完成</span> <s>不追 B 站番剧 → 删「哔哩哔哩」规则集 + 策略组</s><br>
+          <span class="small">↳ B 站主站仍直连、功能正常；B 站去广告重写保留</span></li>
+        <li><b>不跑签到脚本</b> → 删 BOXJS 重写 <span class="pill p-gray">待定</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tier">
+    <div class="tier-head">不建议删的 <span class="bf">删了会出问题</span></div>
+    <div class="tier-body">
+      <ul>
+        <li><b>全球加速</b> — 删了 Safari 和冷门外站全打不开</li>
+        <li><b>广告终结者 + 规则修正</b> — 这是去广告的根基，而且两者顺序不能动</li>
+        <li><b>微信直连</b> — 删了微信可能转圈</li>
+        <li><b>6 行内网 ip-cidr</b> — 删了局域网 / 投屏 / 路由器后台会出问题</li>
+        <li><b><code>final, direct</code></b> — 这是整套配置的根基</li>
+        <li><b>DNS 那一段</b> — 作者调过的，动了容易出玄学问题</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>七、你要自己动手的话，注意这 3 件事</h2>
+  <div class="card">
+    <ol>
+      <li><b>删重写 → 随便删，安全。</b>删掉后 MitM 主机名自动回收，不用清理。<br>
+        <span class="small">唯一注意：删之前确认那个 App 你确实不用了。删了想加回来，重新粘一行 URL 即可。</span></li>
+      <li><b>删规则集 → 要连「策略组」一起处理。</b>比如删「国际媒体」规则集后，「国际媒体」这个组就没人用了，应该一起删；<br>
+        <span class="small">反过来，删一个策略组之前，必须先找出所有引用它的地方改掉，否则规则静默失效、且不报错。</span></li>
+      <li><b><code>[filter_remote]</code> 里的顺序不能重排。</b>尤其「规则修正 → 广告终结者 → 7 个代理应用规则集」这九条的前后关系，动了会导致去广告失效或代理规则被抢。</li>
+    </ol>
+  </div>
+
+  <div class="note n-ok">
+    <b>最省事的做法：</b>把你想删的编号发我（比如「删第一节 11、14、15、16；第三节 5、6、7、10、11、12、13、14、17、18」），<br>
+    我一次性改完，连策略组和引用一起处理干净，再给你一份新的 <code>.conf</code>。
+  </div>
+
+</div>
+</body>
+</html>
